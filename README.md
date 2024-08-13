@@ -1,5 +1,7 @@
 # RYZE Digital Cookie Consent
 
+![Run linter(s) workflow status](https://github.com/ryze-digital/cookie-consent/actions/workflows/run-lint.yml/badge.svg)
+
 ## Install
 
 ```sh
