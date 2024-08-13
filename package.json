@@ -1,6 +1,6 @@
 {
   "name": "@ryze-digital/cookie-consent",
-  "version": "0.1.0",
+  "version": "1.0.0-beta.0",
   "description": "Abstracts and standardizes the implementation of cookie consent managers, such as Cookiebot or OneTrust",
   "main": "index.js",
   "author": "RYZE Digital GmbH <kontakt@ryze-digital.de> (https://www.ryze-digital.de/)",
