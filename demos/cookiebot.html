@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Cookiebot Demo</title>
+    <meta charset="UTF-8">
+
+    <!-- Cookiebot Cookie Consent Notice -->
+    <script
+        data-cookie-consent
+        data-privacy-url="/data-privacy"
+        data-text-placeholder="Please accept <button data-cookie-preference-center>cookie</button> to see the content."
+        id="Cookiebot"
+        src="https://consent.cookiebot.com/uc.js"
+        data-cbid="e897a409-154a-4b76-be23-b683508b1ee6"
+        type="text/javascript"
+        async
+    ></script>
+    <!-- End Cookiebot Cookie Consent Notice -->
+
+    <!-- Tag Manager -->
+    <script
+        data-tag-manager="google"
+        src="../dist/CookieConsentTagManager.js"
+        id="GTM-WBXVSWR"
+    ></script>
+    <!-- End Tag Manager -->
+
+    <!-- Custom Script -->
+    <script type="text/plain" data-cookieconsent="preferences">
+        console.log('test');
+    </script>
+    <!-- End Custom Script -->
+</head>
+<body>
+    <h1>Cookiebot Demo</h1>
+
+    <a href="#" onclick="window.Cookiebot.renew();return false;">ReOpen Cookiebot Dialog</a>
+
+    <iframe data-src="https://www.youtube.com/embed/098Cw40KuPw" data-cookieconsent="marketing, preferences, statistics"></iframe>
+
+    <script type="module">
+        import { ConsentDependentElementHelper, CookiebotConsent } from '../dist/CookieConsent.js';
+
+        window.addEventListener('cookieBannerVisible', () => {
+            console.log('cookieBannerVisible');
+        });
+
+        window.addEventListener('cookieConsentStatus', (event) => {
+            console.log('cookieConsentStatus');
+            console.log(event.detail.consent);
+        });
+
+        class LanguagePreference extends ConsentDependentElementHelper {
+            constructor() {
+                super();
+
+                this.consentCategory = 'preferences';
+            }
+        }
+
+        new CookiebotConsent();
+        new LanguagePreference();
+    </script>
+</body>
+</html>

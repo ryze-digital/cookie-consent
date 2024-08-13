@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>OneTrust Demo</title>
+    <meta charset="UTF-8">
+
+    <!-- OneTrust Cookie Consent Notice -->
+    <script
+        data-cookie-consent
+        data-privacy-url="/data-privacy"
+        data-text-placeholder="Please accept <button data-cookie-preference-center>cookie</button> to see the content."
+        src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js"
+        data-document-language="true"
+        data-domain-script="a122aba8-00af-47cb-b77c-eaae001066b0-test"
+        type="text/javascript"
+        async
+    ></script>
+    <!-- End OneTrust Cookie Consent Notice -->
+
+    <!-- Tag Manager -->
+    <script
+        data-tag-manager="google"
+        src="../dist/CookieConsentTagManager.js"
+        id="GTM-WBXVSWR"
+    ></script>
+    <!-- End Tag Manager -->
+
+    <!-- Custom Script -->
+    <script type="text/plain" data-cookieconsent="preferences">
+        console.log('test');
+    </script>
+    <!-- End Custom Script -->
+</head>
+<body>
+    <h1>Onetrust Demo</h1>
+
+    <button id="ot-sdk-btn" class="ot-sdk-show-settings">Cookie Settings</button>
+
+    <iframe data-src="https://www.youtube.com/embed/098Cw40KuPw" data-cookieconsent="marketing, preferences, statistics"></iframe>
+
+    <script type="module">
+        import { ConsentDependentElementHelper, OneTrustConsent } from '../dist/CookieConsent.js';
+
+        window.addEventListener('cookieBannerVisible', () => {
+            console.log('cookieBannerVisible');
+        });
+
+        window.addEventListener('cookieConsentStatus', (event) => {
+            console.log('cookieConsentStatus');
+            console.log(event.detail.consent);
+        });
+
+        class LanguagePreference extends ConsentDependentElementHelper {
+            constructor() {
+                super();
+
+                this.consentCategory = 'preferences';
+            }
+        }
+
+        new OneTrustConsent();
+        new LanguagePreference();
+    </script>
+</body>
+</html>
