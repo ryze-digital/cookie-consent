@@ -58,6 +58,9 @@ new CookiebotConsent();
 ```
 
 ## Demos
+
+Checkout this repository and use the [/demos](/demos) folder as document root to see a running demo in the browser.
+
 - [OneTrust demo](/demos/onetrust.html)
 - [Cookiebot demo](/demos/cookiebot.html)
 
