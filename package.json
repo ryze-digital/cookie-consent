@@ -6,6 +6,7 @@
   "author": "RYZE Digital GmbH <kontakt@ryze-digital.de> (https://www.ryze-digital.de/)",
   "license": "UNLICENSED",
   "type": "module",
+  "repository": "github:ryze-digital/cookie-consent",
   "scripts": {
     "lint": "npm-run-all --parallel lint:*",
     "lint:scripts": "eslint src/scripts/**",
