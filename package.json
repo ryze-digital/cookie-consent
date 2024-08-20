@@ -4,7 +4,7 @@
   "description": "Abstracts and standardizes the implementation of cookie consent managers, such as Cookiebot or OneTrust",
   "main": "index.js",
   "author": "RYZE Digital GmbH <kontakt@ryze-digital.de> (https://www.ryze-digital.de/)",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "module",
   "repository": "github:ryze-digital/cookie-consent",
   "scripts": {
