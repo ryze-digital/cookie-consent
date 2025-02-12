@@ -1104,6 +1104,8 @@ class OneTrustConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Coo
 /******/ 
 /************************************************************************/
 var __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
 /*!******************!*\
   !*** ./index.js ***!
   \******************/
@@ -1121,6 +1123,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+})();
 
 var __webpack_exports__ConsentDependentElementHelper = __webpack_exports__.ConsentDependentElementHelper;
 var __webpack_exports__CookiebotConsent = __webpack_exports__.CookiebotConsent;
