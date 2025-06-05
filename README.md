@@ -5,7 +5,7 @@
 ## Install
 
 ```sh
-npm i @ryze-digital/cookie-consent
+npm i @ryze-digital/cookie-consent --save
 ```
 
 ## Usage
