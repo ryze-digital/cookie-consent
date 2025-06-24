@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Usercentrics Consent Demo</title>
+
+    <!-- Usercentrics Cookie Consent Notice -->
+    <script
+            id="usercentrics-cmp"
+            src="https://web.cmp.usercentrics.eu/ui/loader.js"
+            data-settings-id="paefZEd4SKFvOf"
+            data-cookie-consent
+            data-privacy-url="/data-privacy"
+            data-text-placeholder="Bitte akzeptiere <button data-cookie-preference-center>Cookies</button>, um das Video zu sehen."
+            data-document-language="true"
+            async
+    ></script>
+    <!-- End Usercentrics Cookie Consent Notice -->
+</head>
+<body>
+<h1>Usercentrics Consent Demo</h1>
+
+<!-- Custom Script -->
+<script type="text/plain" data-cookieconsent="customcategory-62403252-b40a-4b2d-8f4b-369b8af989ca">
+    console.log('customcategory-62403252-b40a-4b2d-8f4b-369b8af989ca-Skript ausgeführt');
+</script>
+<!-- End Custom Script -->
+
+<!-- Custom Script -->
+<script type="text/plain" data-cookieconsent="marketing">
+    console.log('marketing-Skript ausgeführt');
+</script>
+<!-- End Custom Script -->
+
+<!-- Custom Script -->
+<script type="text/plain" data-cookieconsent="preferences">
+    console.log('preferences-Skript ausgeführt');
+</script>
+<!-- End Custom Script -->
+
+<iframe
+        width="560"
+        height="315"
+        frameborder="0"
+        allowfullscreen
+        data-src="https://www.youtube.com/embed/098Cw40KuPw"
+        data-cookieconsent="marketing,preferences"
+></iframe>
+
+
+<script type="module">
+    import { ConsentDependentElementHelper, UsercentricsConsent } from '../dist/CookieConsent.js';
+
+    window.addEventListener('cookieBannerVisible', () => {
+        console.log('cookieBannerVisible');
+    });
+
+    window.addEventListener('cookieConsentStatus', (event) => {
+        console.log('cookieConsentStatus');
+        console.log(event.detail.consent);
+    });
+    class LanguagePreference extends ConsentDependentElementHelper {
+        constructor() {
+            super();
+            this.consentCategory = 'preferences';
+        }
+    }
+
+    new UsercentricsConsent();
+    new LanguagePreference();
+</script>
+</body>
+</html>
