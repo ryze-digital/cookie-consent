@@ -1,0 +1,60 @@
+import { CookieConsent } from './CookieConsent.js';
+
+export class UsercentricsConsent extends CookieConsent {
+    #categoryMap = {
+        preferences: 'functional',
+        marketing:   'marketing',
+        statistics:  'marketing'
+    };
+
+    constructor() {
+        super({
+            bannerIdentifier: '#uc-main-dialog',
+            privacyUrlIdentifier: '[data-cookie-preference-center]',
+            consentReadDelay: 120
+        });
+        this._initEvents();
+        this._checkConsent();
+    }
+
+    _initEvents() {
+        window.addEventListener('UC_UI_INITIALIZED', () => this._checkConsent());
+        window.addEventListener('UC_CONSENT', () => this._checkConsent());
+        window.addEventListener('consent_status', () => this._checkConsent());
+        window.addEventListener('UC_UI_CMP_EVENT', e => {
+            if (['ACCEPT_ALL', 'SAVE'].includes(e.detail.type)) this._checkConsent();
+        });
+        document.addEventListener('click', e => {
+            if (e.target.matches(this.options.privacyUrlIdentifier)) {
+                this._openPrivacyCenter();
+            }
+        });
+    }
+
+    _checkConsent() {
+        setTimeout(() => {
+            const entries = window.dataLayer?.filter(item => item.event === 'consent_status') || [];
+            const entry = entries[entries.length - 1] || {};
+            const categories = entry?.ucCategory || {};
+
+            console.log('Usercentrics Kategorien (ausgelesen):', categories);
+            Object.keys(this.#categoryMap).forEach(key => {
+                this.options.consent[key] = categories[this.#categoryMap[key]] === true;
+            });
+            const consentModel = this.options.consent;
+            document.querySelectorAll('iframe[data-src][data-cookieconsent]').forEach((iframe) => {
+                const consents = iframe.getAttribute('data-cookieconsent');
+                if (this.constructor.isConsentRequired(consents, consentModel) && iframe.getAttribute('src')) {
+                    iframe.removeAttribute('src');
+                }
+            });
+            this._emitConsentStatusEvent();
+        }, this.options.consentReadDelay);
+    }
+
+    _openPrivacyCenter() {
+        if (window.UC_UI?.showSecondLayer) {
+            window.UC_UI.showSecondLayer();
+        }
+    }
+}
