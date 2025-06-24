@@ -14,12 +14,12 @@ Place the following `<script>` tag inside `<head>`.
 
 ```html
 <script
-    data-cookie-consent
-    data-privacy-url="//Your presence dependent privacy url"
-    data-text-placeholder="//Language dependent placeholder text i.e. Please accept <button data-cookie-preference-center>cookie</button> to see the content."
-    data-document-language="true"
-    type="text/javascript"
-    async
+        data-cookie-consent
+        data-privacy-url="//Your presence dependent privacy url"
+        data-text-placeholder="//Language dependent placeholder text i.e. Please accept <button data-cookie-preference-center>cookie</button> to see the content."
+        data-document-language="true"
+        type="text/javascript"
+        async
 ></script>
 ```
 
@@ -58,6 +58,22 @@ import { CookiebotConsent } from '@ryze-digital/cookie-consent';
 
 new CookiebotConsent();
 ```
+### Usercentrics
+
+Add the following `src` and `data-domain-script` attributes the cookie-consent `<script>` tag.
+
+```html
+src="https://web.cmp.usercentrics.eu/ui/loader.js"
+data-settings-id="//Usercentrics settings id"
+```
+
+#### Initialization
+
+```js
+import { UsercentricsConsent } from '@ryze-digital/cookie-consent';
+
+new UsercentricsConsent();
+```
 
 ## Demos
 
@@ -65,14 +81,15 @@ Checkout this repository and use the [/demos](/demos) folder as document root to
 
 - [OneTrust demo](/demos/onetrust.html)
 - [Cookiebot demo](/demos/cookiebot.html)
+- [Usercentrics demo](/demos/usercentrics.html)
 
 ## Cookie categories
 
-| Category    | Description                                                                       | OneTrust category | Cookiebot category |
-|-------------|-----------------------------------------------------------------------------------|-------------------|--------------------|
-| statistics  | Cookies mainly for analytics                                                      | performance       | statistics         |
-| marketing   | Cookies used for advertisement and conversion                                     | targeting         | marketing          |
-| preferences | Cookies to improve user experience like save seletecd language on language switch | functional        | preferences        |
+| Category    | Description                                                                       | OneTrust category | Cookiebot category | Usercentrics category |
+|-------------|-----------------------------------------------------------------------------------|-------------------|--------------------|-----------------------|
+| statistics  | Cookies mainly for analytics                                                      | performance       | statistics         | marketing             |
+| marketing   | Cookies used for advertisement and conversion                                     | targeting         | marketing          | marketing             |
+| preferences | Cookies to improve user experience like save seletecd language on language switch | functional        | preferences        | functional            |
 
 ## Additional functionalities
 
@@ -82,7 +99,7 @@ functionalities independent of 3rd party platforms.
 ### Events
 
 There are two custom events:
-1. ```cookieBannerVisible``` triggers when the banner becomes visible 
+1. ```cookieBannerVisible``` triggers when the banner becomes visible
 2. ```cookieConsentStatus``` triggers when the consent is changed (including initial load)
 
 ```js
@@ -140,7 +157,7 @@ shown instead of the element, until consent is given.
 
 You can set ```data-cookie-placeholder-text``` to overwrite the default placeholder text.
 
-To show the **privacy center**, you can set the ```data-cookie-preference-center``` attribute on a `<button>`. Or you can 
+To show the **privacy center**, you can set the ```data-cookie-preference-center``` attribute on a `<button>`. Or you can
 also use a `<button>` inside the placeholder text.
 
 ```html
@@ -157,7 +174,7 @@ to the dataLayer object when consent has changed, so tags can be triggered depen
 1. PreferencesCategoryAccepted
 2. MarketingCategoryAccepted
 3. StatisticsCategoryAccepted
- 
+
 
 To use it, you have to update your `webpack.config.js`.
 Add the line below to your [entry configuration](https://webpack.js.org/concepts/entry-points/).
@@ -174,9 +191,9 @@ vendors: {
         // Include all node_modules except cookie consent
         return !(!mod.context.includes('node_modules') || mod.context.includes('@ryze-digital/cookie-consent/dist'));
     },
-    name: 'vendor',
-    chunks: 'all',
-    enforce: true
+        name: 'vendor',
+        chunks: 'all',
+        enforce: true
 }
 ```
 
@@ -211,8 +228,8 @@ user consent is given, then simply set the data attribute.
 
 ```js
 <script type="text/plain" data-cookieconsent="preferences">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','//yourTagmangerID');</script>
 ```
