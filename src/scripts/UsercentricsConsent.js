@@ -3,8 +3,8 @@ import { CookieConsent } from './CookieConsent.js';
 export class UsercentricsConsent extends CookieConsent {
     #categoryMap = {
         preferences: 'functional',
-        marketing:   'marketing',
-        statistics:  'marketing'
+        marketing: 'marketing',
+        statistics: 'marketing'
     };
 
     constructor() {
@@ -18,13 +18,21 @@ export class UsercentricsConsent extends CookieConsent {
     }
 
     _initEvents() {
-        window.addEventListener('UC_UI_INITIALIZED', () => this._checkConsent());
-        window.addEventListener('UC_CONSENT', () => this._checkConsent());
-        window.addEventListener('consent_status', () => this._checkConsent());
-        window.addEventListener('UC_UI_CMP_EVENT', e => {
-            if (['ACCEPT_ALL', 'SAVE'].includes(e.detail.type)) this._checkConsent();
+        window.addEventListener('UC_UI_INITIALIZED', () => {
+            return this._checkConsent();
         });
-        document.addEventListener('click', e => {
+        window.addEventListener('UC_CONSENT', () => {
+            return this._checkConsent();
+        });
+        window.addEventListener('consent_status', () => {
+            return this._checkConsent();
+        });
+        window.addEventListener('UC_UI_CMP_EVENT', (e) => {
+            if (['ACCEPT_ALL', 'SAVE'].includes(e.detail.type)) {
+                this._checkConsent();
+            }
+        });
+        document.addEventListener('click', (e) => {
             if (e.target.matches(this.options.privacyUrlIdentifier)) {
                 this._openPrivacyCenter();
             }
@@ -33,17 +41,20 @@ export class UsercentricsConsent extends CookieConsent {
 
     _checkConsent() {
         setTimeout(() => {
-            const entries = window.dataLayer?.filter(item => item.event === 'consent_status') || [];
+            const entries = window.dataLayer?.filter((item) => {
+                return item.event === 'consent_status';
+            }) || [];
             const entry = entries[entries.length - 1] || {};
             const categories = entry?.ucCategory || {};
 
-            console.log('Usercentrics Kategorien (ausgelesen):', categories);
-            Object.keys(this.#categoryMap).forEach(key => {
+            Object.keys(this.#categoryMap).forEach((key) => {
                 this.options.consent[key] = categories[this.#categoryMap[key]] === true;
             });
             const consentModel = this.options.consent;
+
             document.querySelectorAll('iframe[data-src][data-cookieconsent]').forEach((iframe) => {
                 const consents = iframe.getAttribute('data-cookieconsent');
+
                 if (this.constructor.isConsentRequired(consents, consentModel) && iframe.getAttribute('src')) {
                     iframe.removeAttribute('src');
                 }
