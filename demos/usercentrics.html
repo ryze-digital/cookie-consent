@@ -8,10 +8,10 @@
     <script
             id="usercentrics-cmp"
             src="https://web.cmp.usercentrics.eu/ui/loader.js"
-            data-settings-id="paefZEd4SKFvOf"
+            data-ruleset-id="luFVZh3p9KlueV"
             data-cookie-consent
             data-privacy-url="/data-privacy"
-            data-text-placeholder="Bitte akzeptiere <button data-cookie-preference-center>Cookies</button>, um das Video zu sehen."
+            data-text-placeholder="Bitte akzeptiere <button data-cookie-preference-center>Cookies</button>, um den Inhalt zu sehen."
             data-document-language="true"
             async
     ></script>
@@ -19,12 +19,6 @@
 </head>
 <body>
 <h1>Usercentrics Consent Demo</h1>
-
-<!-- Custom Script -->
-<script type="text/plain" data-cookieconsent="customcategory-62403252-b40a-4b2d-8f4b-369b8af989ca">
-    console.log('customcategory-62403252-b40a-4b2d-8f4b-369b8af989ca-Skript ausgeführt');
-</script>
-<!-- End Custom Script -->
 
 <!-- Custom Script -->
 <script type="text/plain" data-cookieconsent="marketing">
@@ -41,11 +35,16 @@
 <iframe
         width="560"
         height="315"
-        frameborder="0"
         allowfullscreen
         data-src="https://www.youtube.com/embed/098Cw40KuPw"
         data-cookieconsent="marketing,preferences"
 ></iframe>
+
+<div
+        data-cookieconsent="marketing,preferences"
+>
+    Div with Marketing and Preferences Content
+</div>
 
 
 <script type="module">
