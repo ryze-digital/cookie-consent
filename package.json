@@ -24,7 +24,7 @@
     "prebuild": "node pre-build.js"
   },
   "dependencies": {
-    "@ryze-digital/js-utilities": "^1.0.0-beta.0"
+    "@ryze-digital/js-utilities": "^1.1.0"
   },
   "devDependencies": {
     "@ryze-digital/eslint-config-website": "^1.0.0",
