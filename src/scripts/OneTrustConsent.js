@@ -15,6 +15,13 @@ export class OneTrustConsent extends CookieConsent {
             privacyUrlIdentifier: '#onetrust-policy-text a'
         });
 
+        if (this.options.el.hasAttribute('data-domain-script') === false ||
+            this.options.el.getAttribute('data-domain-script') === '') {
+            console.log('OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.');
+
+            return;
+        }
+
         this.#consentCategoryMap = {
             preferences: 'C0003',
             marketing: 'C0004',

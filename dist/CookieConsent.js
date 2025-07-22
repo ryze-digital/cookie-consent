@@ -14,7 +14,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   DetectSticky: () => (/* reexport safe */ _src_DetectSticky_js__WEBPACK_IMPORTED_MODULE_3__.DetectSticky),
 /* harmony export */   FontVerification: () => (/* reexport safe */ _src_FontVerification_js__WEBPACK_IMPORTED_MODULE_4__.FontVerification),
 /* harmony export */   ReduceFunctionCalls: () => (/* reexport safe */ _src_ReduceFunctionCalls_js__WEBPACK_IMPORTED_MODULE_5__.ReduceFunctionCalls),
-/* harmony export */   Selectors: () => (/* reexport safe */ _src_Selectors_js__WEBPACK_IMPORTED_MODULE_6__.Selectors)
+/* harmony export */   Selectors: () => (/* reexport safe */ _src_Selectors_js__WEBPACK_IMPORTED_MODULE_6__.Selectors),
+/* harmony export */   Tracker: () => (/* reexport safe */ _src_Tracker_js__WEBPACK_IMPORTED_MODULE_7__.Tracker)
 /* harmony export */ });
 /* harmony import */ var _src_Base_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/Base.js */ "./node_modules/@ryze-digital/js-utilities/src/Base.js");
 /* harmony import */ var _src_BreakpointProvider_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./src/BreakpointProvider.js */ "./node_modules/@ryze-digital/js-utilities/src/BreakpointProvider.js");
@@ -23,6 +24,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_FontVerification_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./src/FontVerification.js */ "./node_modules/@ryze-digital/js-utilities/src/FontVerification.js");
 /* harmony import */ var _src_ReduceFunctionCalls_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./src/ReduceFunctionCalls.js */ "./node_modules/@ryze-digital/js-utilities/src/ReduceFunctionCalls.js");
 /* harmony import */ var _src_Selectors_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./src/Selectors.js */ "./node_modules/@ryze-digital/js-utilities/src/Selectors.js");
+/* harmony import */ var _src_Tracker_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./src/Tracker.js */ "./node_modules/@ryze-digital/js-utilities/src/Tracker.js");
+
+
 
 
 
@@ -48,7 +52,6 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Basis-Klasse zur einheitlichen Verwendung von Events und Optionen.
  * Jede Adventure-Komponente leitet von dieser Basis-Klasse ab.
- *
  * @example
  * export class Example extends adventure.Base {
  *     constructor () {
@@ -147,7 +150,7 @@ class Base {
 
     /**
      * @param {string} name
-     * @param {object} [data={}]
+     * @param {object} [data]
      * @param {Element} el
      */
     emitEvent(name = '', data = {}, el = this.options.el) {
@@ -160,7 +163,6 @@ class Base {
 
     /**
      * Fügt einem oder mehreren Elementen ein Event hinzu.
-     *
      * @param {Node|NodeList} selector
      * @param {string} eventName
      * @param {Function} callback
@@ -179,7 +181,6 @@ class Base {
 
     /**
      * Entfernt einem Element oder mehreren Elementen das übergebene Event.
-     *
      * @param {Node|NodeList} selector
      * @param {string} [eventName] - Kann ausgelassen werden, um alle Events zu entfernen.
      */
@@ -217,7 +218,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /**
  * Stellt in adventure-scss definierte Breakpoints im JavaScript zur Verfügung
- *
  * @example
  * const {breakpoints} = new adventure.BreakpointProvider();
  *
@@ -281,7 +281,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /**
  * Konvertiert ein Date-Objekt zur Verwendung mit input[type="date"] und input[type="time"]
- *
  * @example
  * const dateToInputConverter = new adventure.DateToInputConverter();
  *
@@ -289,7 +288,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 class DateToInputConverter {
     constructor() {
-        // eslint-disable-next-line prefer-rest-params
+         
         this.dateObj = new Date(...arguments);
     }
 
@@ -355,7 +354,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /**
  * Setzt Klasse während ein Element "sticky" ist
- *
  * @see https://davidwalsh.name/detect-sticky
  * @example
  * const element = document.getElementById('id');
@@ -409,7 +407,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /**
  * Verifiziert ein Fonts.net Projekt asynchron
- *
  * @example
  * new adventure.FontVerification('your fonts.net project ID');
  */
@@ -460,7 +457,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /**
  * Reduziert Funktionsaufrufe
- *
  * @example
  * window.addEventListener('resize', adventure.ReduceFunctionCalls.throttle(() => {...}));
  */
@@ -469,15 +465,14 @@ class ReduceFunctionCalls {
      * @param {Function} callback
      * @param {number} delay
      * @param {object} scope
-     * @param {Array} args
      * @returns {Function}
      * @see https://codeburst.io/throttling-and-debouncing-in-javascript-b01cad5c8edf
      */
-    static throttle(callback, delay = 250, scope = this, ...args) {
+    static throttle(callback, delay = 250, scope = this) {
         let timeout;
         let lastRan;
 
-        return () => {
+        return (...args) => {
             if (!lastRan) {
                 callback.apply(scope, args);
                 lastRan = Date.now();
@@ -498,14 +493,13 @@ class ReduceFunctionCalls {
      * @param {Function} callback
      * @param {number} delay
      * @param {object} scope
-     * @param {Array} args
      * @returns {Function}
      * @see https://davidwalsh.name/javascript-debounce-function
      */
-    static debounce(callback, delay = 250, scope = this, ...args) {
+    static debounce(callback, delay = 250, scope = this) {
         let timeout;
 
-        return () => {
+        return (...args) => {
             const debouncedCallback = () => {
                 timeout = null;
 
@@ -533,7 +527,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /**
  * DOM-Zugriffe, die nicht mit CSS möglich sind
- *
  * @example
  * document.querySelector('button').addEventListener('click', (event) => {
  *     const siblings = adventure.Selectors.siblings(event.target);
@@ -548,6 +541,72 @@ class Selectors {
     static siblings(element) {
         return [...element.parentElement.children].filter((siblings) => {
             return siblings !== element;
+        });
+    }
+}
+
+/***/ }),
+
+/***/ "./node_modules/@ryze-digital/js-utilities/src/Tracker.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/@ryze-digital/js-utilities/src/Tracker.js ***!
+  \****************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Tracker: () => (/* binding */ Tracker)
+/* harmony export */ });
+class Tracker {
+    /**
+     * @type {object}
+     */
+    #trackingProviderMapping = {
+        'matomo': '_paq',
+        'googleAnalytics': 'gtag'
+    };
+
+    /**
+     * @type {Array}
+     */
+    #trackingProvider = [];
+
+    constructor() {
+        this.#setTrackingProvider();
+
+        if (this.#trackingProvider.length === 0) {
+            console.warn('No tracking provider detected');
+        }
+    }
+
+    /**
+     * @param {string} category
+     * @param {string} action
+     * @param {string} name
+     * @param {number} value
+     */
+    track(category, action, name, value) {
+        this.#trackingProvider.forEach((trackingProvider) => {
+            switch (trackingProvider) {
+                case 'matomo':
+                    window[this.#trackingProviderMapping[trackingProvider]].push(['trackEvent', category, action, name, value]);
+                    break;
+                case 'googleAnalytics':
+                    window[this.#trackingProviderMapping[trackingProvider]]('event', action, {
+                        event_category: category,
+                        event_label: name,
+                        value: value
+                    });
+                    break;
+            }
+        });
+    }
+
+    #setTrackingProvider() {
+        Object.keys(this.#trackingProviderMapping).forEach((trackingProvider) => {
+            if (typeof window[this.#trackingProviderMapping[trackingProvider]] !== 'undefined') {
+                this.#trackingProvider.push(trackingProvider);
+            }
         });
     }
 }
@@ -905,6 +964,13 @@ class CookiebotConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Co
             privacyUrlIdentifier: '#CybotCookiebotDialogDetailBodyContentTextAbout a'
         });
 
+        if (this.options.el.hasAttribute('data-cbid') === false ||
+            this.options.el.getAttribute('data-cbid') === '') {
+            console.warn('Cookiebot project id not found. Please provide Cookiebot project id in data-cbid attribute.');
+
+            return;
+        }
+
         this.#initUserBehaviourEvent();
     }
 
@@ -988,6 +1054,13 @@ class OneTrustConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Coo
             bannerIdentifier: '#onetrust-banner-sdk',
             privacyUrlIdentifier: '#onetrust-policy-text a'
         });
+
+        if (this.options.el.hasAttribute('data-domain-script') === false ||
+            this.options.el.getAttribute('data-domain-script') === '') {
+            console.log('OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.');
+
+            return;
+        }
 
         this.#consentCategoryMap = {
             preferences: 'C0003',
@@ -1126,7 +1199,7 @@ __webpack_require__.r(__webpack_exports__);
 
 })();
 
-var __webpack_exports__ConsentDependentElementHelper = __webpack_exports__.ConsentDependentElementHelper;
-var __webpack_exports__CookiebotConsent = __webpack_exports__.CookiebotConsent;
-var __webpack_exports__OneTrustConsent = __webpack_exports__.OneTrustConsent;
+const __webpack_exports__ConsentDependentElementHelper = __webpack_exports__.ConsentDependentElementHelper;
+const __webpack_exports__CookiebotConsent = __webpack_exports__.CookiebotConsent;
+const __webpack_exports__OneTrustConsent = __webpack_exports__.OneTrustConsent;
 export { __webpack_exports__ConsentDependentElementHelper as ConsentDependentElementHelper, __webpack_exports__CookiebotConsent as CookiebotConsent, __webpack_exports__OneTrustConsent as OneTrustConsent };
