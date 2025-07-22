@@ -17,7 +17,7 @@ export class OneTrustConsent extends CookieConsent {
 
         if (this.options.el.hasAttribute('data-domain-script') === false ||
             this.options.el.getAttribute('data-domain-script') === '') {
-            console.log('OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.');
+            console.warn('OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.');
 
             return;
         }
