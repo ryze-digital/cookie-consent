@@ -1057,7 +1057,7 @@ class OneTrustConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Coo
 
         if (this.options.el.hasAttribute('data-domain-script') === false ||
             this.options.el.getAttribute('data-domain-script') === '') {
-            console.log('OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.');
+            console.warn('OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.');
 
             return;
         }
@@ -1199,7 +1199,7 @@ __webpack_require__.r(__webpack_exports__);
 
 })();
 
-const __webpack_exports__ConsentDependentElementHelper = __webpack_exports__.ConsentDependentElementHelper;
-const __webpack_exports__CookiebotConsent = __webpack_exports__.CookiebotConsent;
-const __webpack_exports__OneTrustConsent = __webpack_exports__.OneTrustConsent;
+var __webpack_exports__ConsentDependentElementHelper = __webpack_exports__.ConsentDependentElementHelper;
+var __webpack_exports__CookiebotConsent = __webpack_exports__.CookiebotConsent;
+var __webpack_exports__OneTrustConsent = __webpack_exports__.OneTrustConsent;
 export { __webpack_exports__ConsentDependentElementHelper as ConsentDependentElementHelper, __webpack_exports__CookiebotConsent as CookiebotConsent, __webpack_exports__OneTrustConsent as OneTrustConsent };
