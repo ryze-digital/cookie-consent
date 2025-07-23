@@ -100,9 +100,11 @@ export class UsercentricsConsent extends CookieConsent {
                 const consents = el.getAttribute('data-cookieconsent');
 
                 if (this.constructor.isConsentRequired(consents, consentModel)) {
-                    el.style.display = 'none';
+                    el.classList.remove('cookie-consent-visible');
+                    el.classList.add('cookie-consent-hidden');
                 } else {
-                    el.style.display = '';
+                    el.classList.add('cookie-consent-visible');
+                    el.classList.remove('cookie-consent-hidden');
                 }
             });
     }
