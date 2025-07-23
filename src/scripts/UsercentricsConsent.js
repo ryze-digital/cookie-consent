@@ -47,11 +47,20 @@ export class UsercentricsConsent extends CookieConsent {
                 return item.event === 'consent_status';
             }) || [];
             const entry = entries[entries.length - 1] || {};
-            const categories = entry?.ucCategory || {};
+            const categories = entry.ucCategory || {};
 
             Object.keys(this.categoryMap).forEach((key) => {
                 this.options.consent[key] = categories[this.categoryMap[key]] === true;
             });
+
+            const knownFields = ['event', 'action', 'type', 'ucCategory'];
+
+            Object.keys(entry).forEach((key) => {
+                if (!knownFields.includes(key)) {
+                    this.options.consent[key] = entry[key] === true;
+                }
+            });
+
             const consentModel = this.options.consent;
 
             document.querySelectorAll('iframe[data-src][data-cookieconsent]').forEach((iframe) => {
@@ -61,9 +70,18 @@ export class UsercentricsConsent extends CookieConsent {
                     iframe.removeAttribute('src');
                 }
             });
+
             this._emitConsentStatusEvent();
             this.toggleContentElements(consentModel);
         }, this.options.consentReadDelay);
+    }
+
+    /**
+     * @param {string} key
+     * @returns {boolean}
+     */
+    hasConsent(key) {
+        return this.options.consent[key] === true;
     }
 
     _openPrivacyCenter() {
