@@ -71,6 +71,15 @@ export class UsercentricsConsent extends CookieConsent {
                 }
             });
 
+            document.querySelectorAll('script[type="text/plain"][data-cookieconsent]').forEach((el) => {
+                const consents = el.getAttribute('data-cookieconsent');
+                if (!this.constructor.isConsentRequired(consents, consentModel)) {
+                    const s = document.createElement('script');
+                    s.textContent = el.textContent;
+                    document.body.appendChild(s);
+                }
+            });
+
             this._emitConsentStatusEvent();
             this.toggleContentElements(consentModel);
         }, this.options.consentReadDelay);
