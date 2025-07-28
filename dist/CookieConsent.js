@@ -1192,8 +1192,10 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
 
             document.querySelectorAll('script[type="text/plain"][data-cookieconsent]').forEach((el) => {
                 const consents = el.getAttribute('data-cookieconsent');
+
                 if (!this.constructor.isConsentRequired(consents, consentModel)) {
                     const s = document.createElement('script');
+
                     s.textContent = el.textContent;
                     document.body.appendChild(s);
                 }
