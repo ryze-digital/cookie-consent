@@ -1131,26 +1131,46 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
     constructor() {
         super({
             bannerIdentifier: '#uc-main-dialog',
-            privacyUrlIdentifier: '[data-cookie-preference-center]',
-            consentReadDelay: 120
+            privacyUrlIdentifier: '[data-cookie-preference-center]'
         });
         this._initEvents();
+
+        if (Array.isArray(window.dataLayer)) {
+            const originalPush = window.dataLayer.push;
+
+            window.dataLayer.push = (...args) => {
+                const result = originalPush.apply(window.dataLayer, args);
+
+                this._checkConsent();
+
+                return result;
+            };
+        }
+
         this._checkConsent();
     }
 
     _initEvents() {
         window.addEventListener('UC_UI_INITIALIZED', () => {
-            return this._checkConsent();
+            setTimeout(() => {
+                return this._checkConsent();
+            }, 100);
         });
         window.addEventListener('UC_CONSENT', () => {
-            return this._checkConsent();
+            setTimeout(() => {
+                return this._checkConsent();
+            }, 100);
         });
         window.addEventListener('consent_status', () => {
-            return this._checkConsent();
+            setTimeout(() => {
+                return this._checkConsent();
+            }, 100);
         });
         window.addEventListener('UC_UI_CMP_EVENT', (e) => {
             if (['ACCEPT_ALL', 'SAVE'].includes(e.detail?.type)) {
-                this._checkConsent();
+                setTimeout(() => {
+                    return this._checkConsent();
+                }, 100);
             }
         });
         document.addEventListener('click', (e) => {
@@ -1161,67 +1181,81 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
     }
 
     _checkConsent() {
-        setTimeout(() => {
-            const entries = window.dataLayer?.filter((item) => {
-                return item.event === 'consent_status';
-            }) || [];
-            const entry = entries[entries.length - 1] || {};
-            const categories = entry.ucCategory || {};
+        const entries = window.dataLayer?.filter((item) => {
+            return item.event === 'consent_status';
+        }) || [];
+        const entry = entries[entries.length - 1] || {};
+        const categories = entry.ucCategory || {};
 
-            Object.keys(this.categoryMap).forEach((key) => {
-                this.options.consent[key] = categories[this.categoryMap[key]] === true;
-            });
+        Object.keys(this.categoryMap).forEach((key) => {
+            this.options.consent[key] = categories[this.categoryMap[key]] === true;
+        });
 
-            const knownFields = ['event', 'action', 'type', 'ucCategory'];
+        const knownFields = ['event', 'action', 'type', 'ucCategory'];
 
-            Object.keys(entry).forEach((key) => {
-                if (!knownFields.includes(key)) {
-                    this.options.consent[key] = entry[key] === true;
-                }
-            });
+        Object.keys(entry).forEach((key) => {
+            if (!knownFields.includes(key)) {
+                this.options.consent[key] = entry[key] === true;
+            }
+        });
 
-            const consentModel = this.options.consent;
+        const consentModel = this.options.consent;
 
-            document.querySelectorAll('iframe[data-src][data-cookieconsent]').forEach((iframe) => {
-                const consents = iframe.getAttribute('data-cookieconsent');
+        document.querySelectorAll('iframe[data-src][data-cookieconsent]').forEach((iframe) => {
+            const consents = iframe.getAttribute('data-cookieconsent');
 
-                if (this.constructor.isConsentRequired(consents, consentModel)) {
-                    iframe.removeAttribute('src');
-                } else if (!iframe.getAttribute('src')) {
-                    iframe.setAttribute('src', iframe.getAttribute('data-src'));
-                }
-            });
+            if (UsercentricsConsent.isConsentRequired(consents, consentModel)) {
+                iframe.removeAttribute('src');
+            } else if (!iframe.getAttribute('src')) {
+                iframe.setAttribute('src', iframe.getAttribute('data-src'));
+            }
+        });
 
-            document.querySelectorAll('script[type="text/plain"][data-cookieconsent]').forEach((el) => {
-                const consents = el.getAttribute('data-cookieconsent').split(',').map((s) => {
-                    return s.trim();
+        document.querySelectorAll('script[type="text/plain"][data-cookieconsent]').forEach((el) => {
+            const consents = el.getAttribute('data-cookieconsent');
+
+            if (!UsercentricsConsent.isConsentRequired(consents, consentModel)) {
+                const script = document.createElement('script');
+
+                script.textContent = el.textContent;
+                Array.from(el.attributes).forEach((attr) => {
+                    if (attr.name !== 'type') {
+                        script.setAttribute(attr.name, attr.value);
+                    }
                 });
-                const consentModel = this.options.consent;
-                const allConsented = consents.every((key) => {
-                    return consentModel[key] === true;
-                });
+                el.parentNode.replaceChild(script, el);
+            }
+        });
 
-                if (allConsented) {
-                    const script = document.createElement('script');
+        this._emitConsentStatusEvent();
+        this.toggleContentElements(consentModel);
+    }
 
-                    script.textContent = el.textContent;
-                    Array.from(el.attributes).forEach((attr) => {
-                        if (attr.name !== 'type') {
-                            script.setAttribute(attr.name, attr.value);
-                        }
-                    });
-                    el.parentNode.replaceChild(script, el);
-                }
-            });
+    /**
+     * @param {string} consents
+     * @param {{[key: string]: boolean}} consentModel
+     * @returns {boolean}
+     */
+    static isConsentRequired(consents, consentModel) {
+        if (!consents) {
+            return false;
+        }
+        const keys = consents.split(',').map((s) => {
+            return s.trim();
+        }).filter(Boolean);
 
-            this._emitConsentStatusEvent();
-            this.toggleContentElements(consentModel);
-        }, this.options.consentReadDelay);
+        if (keys.length === 0) {
+            return false;
+        }
+
+        return keys.some((key) => {
+            return !consentModel[key];
+        });
     }
 
     /**
      * @param {string} key
-     * @returns {boolean} true
+     * @returns {boolean}
      */
     hasConsent(key) {
         return this.options.consent[key] === true;
@@ -1234,7 +1268,8 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
     }
 
     /**
-     * @param {object} consentModel
+     *
+     * @param {{[key: string]: boolean}} consentModel
      */
     toggleContentElements(consentModel) {
         document
@@ -1242,7 +1277,7 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
             .forEach((el) => {
                 const consents = el.getAttribute('data-cookieconsent');
 
-                if (this.constructor.isConsentRequired(consents, consentModel)) {
+                if (UsercentricsConsent.isConsentRequired(consents, consentModel)) {
                     el.classList.remove('cookie-consent-visible');
                     el.classList.add('cookie-consent-hidden');
                 } else {
