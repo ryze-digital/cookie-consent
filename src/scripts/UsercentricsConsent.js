@@ -30,7 +30,7 @@ export class UsercentricsConsent extends CookieConsent {
             return this._checkConsent();
         });
         window.addEventListener('UC_UI_CMP_EVENT', (e) => {
-            if (['ACCEPT_ALL', 'SAVE'].includes(e.detail.type)) {
+            if (['ACCEPT_ALL', 'SAVE'].includes(e.detail?.type)) {
                 this._checkConsent();
             }
         });
@@ -66,19 +66,32 @@ export class UsercentricsConsent extends CookieConsent {
             document.querySelectorAll('iframe[data-src][data-cookieconsent]').forEach((iframe) => {
                 const consents = iframe.getAttribute('data-cookieconsent');
 
-                if (this.constructor.isConsentRequired(consents, consentModel) && iframe.getAttribute('src')) {
+                if (this.constructor.isConsentRequired(consents, consentModel)) {
                     iframe.removeAttribute('src');
+                } else if (!iframe.getAttribute('src')) {
+                    iframe.setAttribute('src', iframe.getAttribute('data-src'));
                 }
             });
 
             document.querySelectorAll('script[type="text/plain"][data-cookieconsent]').forEach((el) => {
-                const consents = el.getAttribute('data-cookieconsent');
+                const consents = el.getAttribute('data-cookieconsent').split(',').map((s) => {
+                    return s.trim();
+                });
+                const consentModel = this.options.consent;
+                const allConsented = consents.every((key) => {
+                    return consentModel[key] === true;
+                });
 
-                if (!this.constructor.isConsentRequired(consents, consentModel)) {
-                    const s = document.createElement('script');
+                if (allConsented) {
+                    const script = document.createElement('script');
 
-                    s.textContent = el.textContent;
-                    document.body.appendChild(s);
+                    script.textContent = el.textContent;
+                    Array.from(el.attributes).forEach((attr) => {
+                        if (attr.name !== 'type') {
+                            script.setAttribute(attr.name, attr.value);
+                        }
+                    });
+                    el.parentNode.replaceChild(script, el);
                 }
             });
 
@@ -89,7 +102,7 @@ export class UsercentricsConsent extends CookieConsent {
 
     /**
      * @param {string} key
-     * @returns {boolean}
+     * @returns {boolean} true
      */
     hasConsent(key) {
         return this.options.consent[key] === true;
