@@ -58,14 +58,17 @@ import { CookiebotConsent } from '@ryze-digital/cookie-consent';
 
 new CookiebotConsent();
 ```
+
 ### Usercentrics
 
-Add the following `src` and `data-domain-script` attributes the cookie-consent `<script>` tag.
+Add the following `src` and identifier attribute to the cookie-consent `<script>` tag.
 
 ```html
 src="https://web.cmp.usercentrics.eu/ui/loader.js"
 data-settings-id="//Usercentrics settings id"
 ```
+
+> **Note:** Depending on your Usercentrics setup, you may use `data-settings-id` **or** `data-ruleset-id` (as in the demo).
 
 #### Initialization
 
@@ -74,6 +77,29 @@ import { UsercentricsConsent } from '@ryze-digital/cookie-consent';
 
 new UsercentricsConsent();
 ```
+
+##### Block specific services with Usercentrics (e.g., YouTube)
+Besides categories, you can gate content by the exact **service name** configured in Usercentrics. Use the service label in `data-cookieconsent`:
+
+```html
+<iframe
+    data-src="https://www.youtube.com/embed/098Cw40KuPw"
+    data-cookieconsent="YouTube Video"
+    title="YouTube video"
+    loading="lazy"
+    allowfullscreen
+></iframe>
+```
+
+For scripts:
+
+```html
+<script type="text/plain" data-cookieconsent="Matomo">
+    // Matomo init...
+</script>
+```
+
+You can also combine values via comma separation (e.g., `data-cookieconsent="YouTube Video, marketing"`). Before consent the element is hidden or shows a placeholder (see **Data attributes**). After consent, the library sets `src` from `data-src` and executes queued scripts.
 
 ## Demos
 
@@ -232,4 +258,3 @@ user consent is given, then simply set the data attribute.
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','//yourTagmangerID');</script>
-```
