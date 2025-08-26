@@ -216,3 +216,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','//yourTagmangerID');</script>
 ```
+
+### Nonce
+
+If you are using a restrictive CSP that disallows inline scripts without a nonce you can set the nonce by adding the `data-nonce` attribute to the script tag.
+
+```js
+<script
+data-tag-manager="matomo"
+src="{WebResource->scripts:file=CookieConsentTagManager.js}"
+id="//yourTagmanagerUrl"
+data-nonce="//yourNonceValue"
+    ></script>
+```

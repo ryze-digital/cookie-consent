@@ -38,10 +38,13 @@ class CookieConsentTagManager {
 
     #acceptedCookies;
 
+    #nonce;
+
     constructor() {
         this.#element = document.querySelector('[data-tag-manager]');
         this.#trackingId = this.#element.getAttribute('id');
         this.#trackingType = this.#element.getAttribute('data-tag-manager');
+        this.#nonce = this.#element.getAttribute('data-nonce');
         this.#acceptedCookies = {};
 
         if (this.#element === null || !this.#trackingId) {
@@ -94,6 +97,7 @@ class CookieConsentTagManager {
 
         script.innerHTML = html;
         script.type = 'text/javascript';
+        script.nonce = this.#nonce;
 
         this.#element.insertAdjacentElement(position, script);
     }
