@@ -78,28 +78,7 @@ import { UsercentricsConsent } from '@ryze-digital/cookie-consent';
 new UsercentricsConsent();
 ```
 
-##### Block specific services with Usercentrics (e.g., YouTube)
-Besides categories, you can gate content by the exact **service name** configured in Usercentrics. Use the service label in `data-cookieconsent`:
 
-```html
-<iframe
-    data-src="https://www.youtube.com/embed/098Cw40KuPw"
-    data-cookieconsent="YouTube Video"
-    title="YouTube video"
-    loading="lazy"
-    allowfullscreen
-></iframe>
-```
-
-For scripts:
-
-```html
-<script type="text/plain" data-cookieconsent="Matomo">
-    // Matomo init...
-</script>
-```
-
-You can also combine values via comma separation (e.g., `data-cookieconsent="YouTube Video, marketing"`). Before consent the element is hidden or shows a placeholder (see **Data attributes**). After consent, the library sets `src` from `data-src` and executes queued scripts.
 
 ## Demos
 
@@ -191,6 +170,31 @@ also use a `<button>` inside the placeholder text.
 ```
 
 You can use ```data-cookieconsent="ignore"```, if you don't want an element to depend on the cookie platform.
+
+#### Usercentrics Special Features
+
+##### Block specific services with Usercentrics (e.g., YouTube)
+Besides categories, you can gate content by the exact **service name** configured in Usercentrics. Use the service label in `data-cookieconsent`:
+
+```html
+<iframe
+    data-src="https://www.youtube.com/embed/098Cw40KuPw"
+    data-cookieconsent="YouTube Video"
+    title="YouTube video"
+    loading="lazy"
+    allowfullscreen
+></iframe>
+```
+
+For scripts:
+
+```html
+<script type="text/plain" data-cookieconsent="Matomo">
+    // Matomo init...
+</script>
+```
+
+You can also combine values via comma separation (e.g., `data-cookieconsent="YouTube Video, marketing"`). Before consent the element is hidden or shows a placeholder. After consent, the library sets `src` from `data-src` and executes queued scripts.
 
 ## Google Tag Manager and Matomo
 
