@@ -1,91 +1,63 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
+    <title>Usercentrics Demo</title>
     <meta charset="UTF-8">
-    <title>Usercentrics Consent Demo</title>
 
     <!-- Usercentrics Cookie Consent Notice -->
     <script
-            id="usercentrics-cmp"
-            src="https://web.cmp.usercentrics.eu/ui/loader.js"
-            data-ruleset-id="//Replace it with your Usercentrics Ruleset ID"
-            data-cookie-consent
-            data-privacy-url="/data-privacy"
-            data-text-placeholder="Bitte akzeptiere <button data-cookie-preference-center>Cookies</button>, um den Inhalt zu sehen."
-            data-document-language="true"
-            async
+        data-cookie-consent
+        data-privacy-url="/data-privacy"
+        data-text-placeholder="Please accept <button data-cookie-preference-center>cookie</button> to see the content."
+        id="usercentrics-cmp"
+        src="https://web.cmp.usercentrics.eu/ui/loader.js"
+        data-ruleset-id="//Replace it with your Usercentrics Ruleset ID"
+        data-document-language="true"
+        async
     ></script>
     <!-- End Usercentrics Cookie Consent Notice -->
 
-    <style>
-        [data-cookieconsent]:not([data-cookieconsent="ignore"]) {
-            display: none;
-        }
-        [data-cookieconsent].cookie-consent-visible {
-            display: flex;
-        }
+    <!-- Tag Manager -->
+    <script
+        data-tag-manager="google"
+        src="../dist/CookieConsentTagManager.js"
+        id="GTM-WBXVSWR"
+    ></script>
+    <!-- End Tag Manager -->
 
-        [data-cookieconsent].cookie-consent-hidden {
-            display: none;
-        }
-    </style>
+    <!-- Custom Script -->
+    <script type="text/plain" data-cookieconsent="preferences">
+        console.log('test');
+    </script>
+    <!-- End Custom Script -->
 </head>
 <body>
-<h1>Usercentrics Consent Demo</h1>
+    <h1>Usercentrics Demo</h1>
 
-<!-- Custom Script -->
-<script type="text/plain" data-cookieconsent="marketing">
-    console.log('marketing-Skript ausgeführt');
-</script>
-<!-- End Custom Script -->
+    <iframe data-src="https://www.youtube.com/embed/098Cw40KuPw" data-cookieconsent="YouTube Video"></iframe>
 
-<!-- Custom Script -->
-<script type="text/plain" data-cookieconsent="Matomo">
-    console.log('Matomo Skript ausgeführt');
-</script>
-<!-- End Custom Script -->
+    <script type="module">
+        import { ConsentDependentElementHelper, UsercentricsConsent } from '../dist/CookieConsent.js';
 
+        window.addEventListener('cookieBannerVisible', () => {
+            console.log('cookieBannerVisible');
+        });
 
-<!-- Custom Script -->
-<script type="text/plain" data-cookieconsent="preferences">
-    console.log('preferences-Skript ausgeführt');
-</script>
-<!-- End Custom Script -->
-<iframe
-        width="560"
-        height="315"
-        allowfullscreen
-        data-src="https://www.youtube.com/embed/098Cw40KuPw"
-        data-cookieconsent="YouTube Video"
-></iframe>
+        window.addEventListener('cookieConsentStatus', (event) => {
+            console.log('cookieConsentStatus');
+            console.log(event.detail.consent);
+        });
 
-<div
-        data-cookieconsent="marketing,preferences"
->
-    Div with Marketing and Preferences Content
-</div>
+        class LanguagePreference extends ConsentDependentElementHelper {
+            constructor() {
+                super();
 
-
-<script type="module">
-    import { ConsentDependentElementHelper, UsercentricsConsent } from '../dist/CookieConsent.js';
-
-    window.addEventListener('cookieBannerVisible', () => {
-        console.log('cookieBannerVisible');
-    });
-
-    window.addEventListener('cookieConsentStatus', (event) => {
-        console.log('cookieConsentStatus');
-        console.log(event.detail.consent);
-    });
-    class LanguagePreference extends ConsentDependentElementHelper {
-        constructor() {
-            super();
-            this.consentCategory = 'preferences';
+                this.consentCategory = 'preferences';
+            }
         }
-    }
 
-    new UsercentricsConsent();
-    new LanguagePreference();
-</script>
+        new UsercentricsConsent();
+        new LanguagePreference();
+    </script>
 </body>
 </html>
