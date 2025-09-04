@@ -21,15 +21,12 @@ export class UsercentricsConsent extends CookieConsent {
             statistics: 'marketing'
         };
 
-        if (this.options.el.hasAttribute('data-ruleset-id') === false ||
-            this.options.el.getAttribute('data-ruleset-id') === '' ||
-            this.options.el.getAttribute('data-ruleset-id').startsWith('//')) {
-            if (this.options.el.hasAttribute('data-settings-id') === false ||
-                this.options.el.getAttribute('data-settings-id') === '' ||
-                this.options.el.getAttribute('data-settings-id').startsWith('//')) {
-                console.warn('Usercentrics project id not found. Please provide Usercentrics project id in data-ruleset-id or data-settings-id attribute.');
-                return;
-            }
+        const rulesetIdAttr = this.options.el.getAttribute('data-ruleset-id');
+        const settingsIdAttr = this.options.el.getAttribute('data-settings-id');
+
+        if (rulesetIdAttr === '' && settingsIdAttr === '') {
+            console.warn('Usercentrics project id not found. Please provide Usercentrics project id in data-ruleset-id or data-settings-id attribute.');
+            return;
         }
 
         this.#initUserBehaviourEvent();
@@ -39,11 +36,11 @@ export class UsercentricsConsent extends CookieConsent {
         this.#checkForConsentStatus();
 
         window.addEventListener('UC_UI_INITIALIZED', () => {
-            setTimeout(() => this.#checkForConsentStatus(), 100);
+            this.#checkForConsentStatus();
         });
 
         window.addEventListener('UC_CONSENT', () => {
-            setTimeout(() => this.#checkForConsentStatus(), 100);
+            this.#checkForConsentStatus();
         });
     }
 
@@ -69,6 +66,11 @@ export class UsercentricsConsent extends CookieConsent {
         this._emitConsentStatusEvent();
     }
 
+    /**
+     *
+     * Open privacy center to change consent
+     * @protected
+     */
     _openPrivacyCenter() {
         if (window.UC_UI?.showSecondLayer) {
             window.UC_UI.showSecondLayer();
