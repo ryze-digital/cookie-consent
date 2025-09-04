@@ -63,7 +63,7 @@ class CookieConsentTagManager {
         this.#nonce = this.#element.dataset.nonce;
         this.#acceptedCookies = {};
 
-        if (!this.#trackingId) {
+        if (this.#element === null || !this.#trackingId) {
             return;
         }
 

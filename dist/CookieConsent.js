@@ -1199,7 +1199,7 @@ __webpack_require__.r(__webpack_exports__);
 
 })();
 
-var __webpack_exports__ConsentDependentElementHelper = __webpack_exports__.ConsentDependentElementHelper;
-var __webpack_exports__CookiebotConsent = __webpack_exports__.CookiebotConsent;
-var __webpack_exports__OneTrustConsent = __webpack_exports__.OneTrustConsent;
+const __webpack_exports__ConsentDependentElementHelper = __webpack_exports__.ConsentDependentElementHelper;
+const __webpack_exports__CookiebotConsent = __webpack_exports__.CookiebotConsent;
+const __webpack_exports__OneTrustConsent = __webpack_exports__.OneTrustConsent;
 export { __webpack_exports__ConsentDependentElementHelper as ConsentDependentElementHelper, __webpack_exports__CookiebotConsent as CookiebotConsent, __webpack_exports__OneTrustConsent as OneTrustConsent };
