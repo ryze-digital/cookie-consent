@@ -36,11 +36,15 @@ export class UsercentricsConsent extends CookieConsent {
         this.#checkForConsentStatus();
 
         window.addEventListener('UC_UI_INITIALIZED', () => {
-            this.#checkForConsentStatus();
+            setTimeout(() => {
+                this.#checkForConsentStatus();
+            }, 100);
         });
 
         window.addEventListener('UC_CONSENT', () => {
-            this.#checkForConsentStatus();
+            setTimeout(() => {
+                this.#checkForConsentStatus();
+            }, 100);
         });
     }
 
@@ -75,29 +79,5 @@ export class UsercentricsConsent extends CookieConsent {
         if (window.UC_UI?.showSecondLayer) {
             window.UC_UI.showSecondLayer();
         }
-    }
-
-    /**
-     * Override the base isConsentRequired method to handle Usercentrics service names
-     * @param {string} consents
-     * @param {{[key: string]: boolean}} consentModel
-     * @returns {boolean}
-     */
-    static isConsentRequired(consents, consentModel) {
-        if (!consents) {
-            return false;
-        }
-
-        const keys = consents.split(',').map((segment) => {
-            return segment.trim();
-        }).filter(Boolean);
-
-        if (keys.length === 0) {
-            return false;
-        }
-
-        return keys.some((key) => {
-            return !consentModel[key];
-        });
     }
 }
