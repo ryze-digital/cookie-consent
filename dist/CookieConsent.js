@@ -918,21 +918,21 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
      * @static
      */
     static isConsentRequired(consents, consentModel) {
-        let consentRequirementStatus = false;
+        let consentRequired = true;
 
         Object.keys(consentModel).forEach((item) => {
             if (!consents.includes(item)) {
                 return;
             }
 
-            if (consentModel[item] === true) {
+            if (consentModel[item] === false) {
                 return;
             }
 
-            consentRequirementStatus = true;
+            consentRequired = false;
         });
 
-        return consentRequirementStatus;
+        return consentRequired;
     }
 }
 
@@ -1119,14 +1119,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CookieConsent.js */ "./src/scripts/CookieConsent.js");
 
 
+/**
+ *
+ * Usercentrics consent class extends Abstract CookieConsent class to inherit all base functionalities
+ * @example
+ * const usercentricsConsent = new UsercentricsConsent();
+ */
 class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.CookieConsent {
-    categoryMap = {
-        preferences: 'functional',
-        marketing: 'marketing',
-        statistics: 'statistics',
-        sale_data: 'sale_of_personal_data',
-        targeted_advertising: 'targeted_advertising'
-    };
+    #consentCategoryMap;
 
     constructor() {
         super({
@@ -1134,67 +1134,49 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
             privacyUrlIdentifier: '[data-cookie-preference-center]'
         });
 
-        this._initEvents();
+        this.#consentCategoryMap = {
+            preferences: 'functional',
+            marketing: 'marketing',
+            statistics: 'marketing'
+        };
 
-        if (Array.isArray(window.dataLayer)) {
-            const originalPush = window.dataLayer.push;
+        const rulesetIdAttr = this.options.el.getAttribute('data-ruleset-id');
+        const settingsIdAttr = this.options.el.getAttribute('data-settings-id');
 
-            window.dataLayer.push = (...argsList) => {
-                const result = originalPush.apply(window.dataLayer, argsList);
-
-                this._checkConsent();
-
-                return result;
-            };
+        if (rulesetIdAttr === '' && settingsIdAttr === '') {
+            console.warn('Usercentrics project id not found. Please provide Usercentrics project id in data-ruleset-id or data-settings-id attribute.');
+            return;
         }
 
-        this._checkConsent();
+        this.#initUserBehaviourEvent();
     }
 
-    _initEvents() {
+    #initUserBehaviourEvent() {
+        this.#checkForConsentStatus();
+
         window.addEventListener('UC_UI_INITIALIZED', () => {
             setTimeout(() => {
-                return this._checkConsent();
+                this.#checkForConsentStatus();
             }, 100);
         });
 
         window.addEventListener('UC_CONSENT', () => {
             setTimeout(() => {
-                return this._checkConsent();
+                this.#checkForConsentStatus();
             }, 100);
-        });
-
-        window.addEventListener('consent_status', () => {
-            setTimeout(() => {
-                return this._checkConsent();
-            }, 100);
-        });
-
-        window.addEventListener('UC_UI_CMP_EVENT', (event) => {
-            if (['ACCEPT_ALL', 'SAVE'].includes(event.detail?.type)) {
-                setTimeout(() => {
-                    return this._checkConsent();
-                }, 100);
-            }
-        });
-
-        document.addEventListener('click', (event) => {
-            if (event.target.matches(this.options.privacyUrlIdentifier)) {
-                this._openPrivacyCenter();
-            }
         });
     }
 
-    _checkConsent() {
+    #checkForConsentStatus() {
         const entries = window.dataLayer?.filter((dataLayerItem) => {
             return dataLayerItem.event === 'consent_status';
         }) || [];
         const entry = entries[entries.length - 1] || {};
         const categories = entry.ucCategory || {};
 
-        Object.keys(this.categoryMap).forEach((key) => {
-            this.options.consent[key] = categories[this.categoryMap[key]] === true;
-        });
+        this.options.consent.preferences = categories[this.#consentCategoryMap.preferences] === true;
+        this.options.consent.marketing = categories[this.#consentCategoryMap.marketing] === true;
+        this.options.consent.statistics = categories[this.#consentCategoryMap.statistics] === true;
 
         const knownFields = ['event', 'action', 'type', 'ucCategory'];
 
@@ -1204,96 +1186,20 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
             }
         });
 
-        const consentModel = this.options.consent;
-
-        document.querySelectorAll('iframe[data-src][data-cookieconsent]').forEach((iframe) => {
-            const consents = iframe.getAttribute('data-cookieconsent');
-
-            if (UsercentricsConsent.isConsentRequired(consents, consentModel)) {
-                iframe.removeAttribute('src');
-            } else if (!iframe.getAttribute('src')) {
-                iframe.setAttribute('src', iframe.getAttribute('data-src'));
-            }
-        });
-
-        document.querySelectorAll('script[type="text/plain"][data-cookieconsent]').forEach((element) => {
-            const consents = element.getAttribute('data-cookieconsent');
-
-            if (!UsercentricsConsent.isConsentRequired(consents, consentModel)) {
-                const script = document.createElement('script');
-
-                script.textContent = element.textContent;
-                Array.from(element.attributes).forEach((attribute) => {
-                    if (attribute.name !== 'type') {
-                        script.setAttribute(attribute.name, attribute.value);
-                    }
-                });
-
-                element.parentNode.replaceChild(script, element);
-            }
-        });
-
         this._emitConsentStatusEvent();
-        this.toggleContentElements(consentModel);
     }
 
     /**
-     * @param {string} consents
-     * @param {{[key: string]: boolean}} consentModel
-     * @returns {boolean}
+     *
+     * Open privacy center to change consent
+     * @protected
      */
-    static isConsentRequired(consents, consentModel) {
-        if (!consents) {
-            return false;
-        }
-
-        const keys = consents.split(',').map((segment) => {
-            return segment.trim();
-        }).filter(Boolean);
-
-        if (keys.length === 0) {
-            return false;
-        }
-
-        return keys.some((key) => {
-            return !consentModel[key];
-        });
-    }
-
-    /**
-     * @param {string} key
-     * @returns {boolean}
-     */
-    hasConsent(key) {
-        return this.options.consent[key] === true;
-    }
-
     _openPrivacyCenter() {
         if (window.UC_UI?.showSecondLayer) {
             window.UC_UI.showSecondLayer();
         }
     }
-
-    /**
-     * @param {{[key: string]: boolean}} consentModel
-     */
-    toggleContentElements(consentModel) {
-        document
-            .querySelectorAll('[data-cookieconsent]:not(script):not([data-cookieconsent="ignore"])')
-            .forEach((element) => {
-                const consents = element.getAttribute('data-cookieconsent');
-
-                if (UsercentricsConsent.isConsentRequired(consents, consentModel)) {
-                    element.classList.remove('cookie-consent-visible');
-                    element.classList.add('cookie-consent-hidden');
-                } else {
-                    element.classList.add('cookie-consent-visible');
-                    element.classList.remove('cookie-consent-hidden');
-                }
-            });
-    }
 }
-
 
 /***/ })
 
