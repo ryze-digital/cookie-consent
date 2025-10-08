@@ -239,18 +239,18 @@ export class CookieConsent extends Base {
      * @static
      */
     static isConsentRequired(consents, consentModel) {
-        let consentRequired = true;
+        let consentRequired = false;
 
         Object.keys(consentModel).forEach((item) => {
             if (!consents.includes(item)) {
                 return;
             }
 
-            if (consentModel[item] === false) {
+            if (consentModel[item] === true) {
                 return;
             }
 
-            consentRequired = false;
+            consentRequired = true;
         });
 
         return consentRequired;
