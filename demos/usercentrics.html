@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Usercentrics Demo</title>
+    <meta charset="UTF-8">
+
+    <!-- Usercentrics Cookie Consent Notice -->
+    <script
+        data-cookie-consent
+        data-privacy-url="/data-privacy"
+        data-text-placeholder="Please accept <button data-cookie-preference-center>cookie</button> to see the content."
+        id="usercentrics-cmp"
+        src="https://web.cmp.usercentrics.eu/ui/loader.js"
+        data-ruleset-id=""
+        data-document-language="true"
+        async
+    ></script>
+    <!-- End Usercentrics Cookie Consent Notice -->
+
+    <!-- Tag Manager -->
+    <script
+        data-tag-manager="google"
+        src="../dist/CookieConsentTagManager.js"
+        id=""
+    ></script>
+    <!-- End Tag Manager -->
+
+    <!-- Custom Script -->
+    <script type="text/plain" data-cookieconsent="preferences">
+        console.log('test');
+    </script>
+    <!-- End Custom Script -->
+</head>
+<body>
+    <h1>Usercentrics Demo</h1>
+
+    <button data-cookie-preference-center>Cookie Settings</button>
+
+    <iframe data-src="https://www.youtube.com/embed/098Cw40KuPw" data-cookieconsent="YouTube Video"></iframe>
+
+    <script type="module">
+        import { ConsentDependentElementHelper, UsercentricsConsent } from '../dist/CookieConsent.js';
+
+        window.addEventListener('cookieBannerVisible', () => {
+            console.log('cookieBannerVisible');
+        });
+
+        window.addEventListener('cookieConsentStatus', (event) => {
+            console.log('cookieConsentStatus');
+            console.log(event.detail.consent);
+        });
+
+        class LanguagePreference extends ConsentDependentElementHelper {
+            constructor() {
+                super();
+
+                this.consentCategory = 'preferences';
+            }
+        }
+
+        new UsercentricsConsent();
+        new LanguagePreference();
+    </script>
+</body>
+</html>
