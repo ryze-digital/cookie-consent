@@ -14,12 +14,12 @@ Place the following `<script>` tag inside `<head>`.
 
 ```html
 <script
-        data-cookie-consent
-        data-privacy-url="//Your presence dependent privacy url"
-        data-text-placeholder="//Language dependent placeholder text i.e. Please accept <button data-cookie-preference-center>cookie</button> to see the content."
-        data-document-language="true"
-        type="text/javascript"
-        async
+    data-cookie-consent
+    data-privacy-url="//Your presence dependent privacy url"
+    data-text-placeholder="//Language dependent placeholder text i.e. Please accept <button data-cookie-preference-center>cookie</button> to see the content."
+    data-document-language="true"
+    type="text/javascript"
+    async
 ></script>
 ```
 
@@ -82,7 +82,8 @@ new UsercentricsConsent();
 
 ## Demos
 
-Checkout this repository and use the [/demos](/demos) folder as document root to see a running demo in the browser.
+Checkout this repository and use the [/demos](/demos) folder as document root to see a running demo in the browser. You
+need to add your project ID to the related data attributes to make the demos work.
 
 - [OneTrust demo](/demos/onetrust.html)
 - [Cookiebot demo](/demos/cookiebot.html)
@@ -221,9 +222,9 @@ vendors: {
         // Include all node_modules except cookie consent
         return !(!mod.context.includes('node_modules') || mod.context.includes('@ryze-digital/cookie-consent/dist'));
     },
-        name: 'vendor',
-        chunks: 'all',
-        enforce: true
+    name: 'vendor',
+    chunks: 'all',
+    enforce: true
 }
 ```
 
@@ -258,7 +259,21 @@ user consent is given, then simply set the data attribute.
 
 ```js
 <script type="text/plain" data-cookieconsent="preferences">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','//yourTagmangerID');</script>
+```
+
+### Nonce
+
+If you are using a restrictive CSP that disallows inline scripts without a nonce you can set the nonce by adding the `data-nonce` attribute to the script tag.
+
+```js
+<script
+data-tag-manager="matomo"
+src="{WebResource->scripts:file=CookieConsentTagManager.js}"
+id="//yourTagmanagerUrl"
+data-nonce="//yourNonceValue"
+    ></script>
+```

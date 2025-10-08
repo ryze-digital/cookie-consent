@@ -918,21 +918,21 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
      * @static
      */
     static isConsentRequired(consents, consentModel) {
-        let consentRequired = true;
+        let consentRequirementStatus = false;
 
         Object.keys(consentModel).forEach((item) => {
             if (!consents.includes(item)) {
                 return;
             }
 
-            if (consentModel[item] === false) {
+            if (consentModel[item] === true) {
                 return;
             }
 
-            consentRequired = false;
+            consentRequirementStatus = true;
         });
 
-        return consentRequired;
+        return consentRequirementStatus;
     }
 }
 
@@ -963,6 +963,13 @@ class CookiebotConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Co
             bannerIdentifier: '#CybotCookiebotDialog',
             privacyUrlIdentifier: '#CybotCookiebotDialogDetailBodyContentTextAbout a'
         });
+
+        if (this.options.el.hasAttribute('data-cbid') === false ||
+            this.options.el.getAttribute('data-cbid') === '') {
+            console.warn('Cookiebot project id not found. Please provide Cookiebot project id in data-cbid attribute.');
+
+            return;
+        }
 
         this.#initUserBehaviourEvent();
     }
@@ -1048,6 +1055,13 @@ class OneTrustConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Coo
             privacyUrlIdentifier: '#onetrust-policy-text a'
         });
 
+        if (this.options.el.hasAttribute('data-domain-script') === false ||
+            this.options.el.getAttribute('data-domain-script') === '') {
+            console.warn('OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.');
+
+            return;
+        }
+
         this.#consentCategoryMap = {
             preferences: 'C0003',
             marketing: 'C0004',
@@ -1100,103 +1114,6 @@ class OneTrustConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Coo
     _openPrivacyCenter() {
         if (window.OneTrust) {
             window.OneTrust.ToggleInfoDisplay();
-        }
-    }
-}
-
-/***/ }),
-
-/***/ "./src/scripts/UsercentricsConsent.js":
-/*!********************************************!*\
-  !*** ./src/scripts/UsercentricsConsent.js ***!
-  \********************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   UsercentricsConsent: () => (/* binding */ UsercentricsConsent)
-/* harmony export */ });
-/* harmony import */ var _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CookieConsent.js */ "./src/scripts/CookieConsent.js");
-
-
-/**
- *
- * Usercentrics consent class extends Abstract CookieConsent class to inherit all base functionalities
- * @example
- * const usercentricsConsent = new UsercentricsConsent();
- */
-class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.CookieConsent {
-    #consentCategoryMap;
-
-    constructor() {
-        super({
-            bannerIdentifier: '#uc-main-dialog',
-            privacyUrlIdentifier: '[data-cookie-preference-center]'
-        });
-
-        this.#consentCategoryMap = {
-            preferences: 'functional',
-            marketing: 'marketing',
-            statistics: 'marketing'
-        };
-
-        const rulesetIdAttr = this.options.el.getAttribute('data-ruleset-id');
-        const settingsIdAttr = this.options.el.getAttribute('data-settings-id');
-
-        if (rulesetIdAttr === '' && settingsIdAttr === '') {
-            console.warn('Usercentrics project id not found. Please provide Usercentrics project id in data-ruleset-id or data-settings-id attribute.');
-            return;
-        }
-
-        this.#initUserBehaviourEvent();
-    }
-
-    #initUserBehaviourEvent() {
-        this.#checkForConsentStatus();
-
-        window.addEventListener('UC_UI_INITIALIZED', () => {
-            setTimeout(() => {
-                this.#checkForConsentStatus();
-            }, 100);
-        });
-
-        window.addEventListener('UC_CONSENT', () => {
-            setTimeout(() => {
-                this.#checkForConsentStatus();
-            }, 100);
-        });
-    }
-
-    #checkForConsentStatus() {
-        const entries = window.dataLayer?.filter((dataLayerItem) => {
-            return dataLayerItem.event === 'consent_status';
-        }) || [];
-        const entry = entries[entries.length - 1] || {};
-        const categories = entry.ucCategory || {};
-
-        this.options.consent.preferences = categories[this.#consentCategoryMap.preferences] === true;
-        this.options.consent.marketing = categories[this.#consentCategoryMap.marketing] === true;
-        this.options.consent.statistics = categories[this.#consentCategoryMap.statistics] === true;
-
-        const knownFields = ['event', 'action', 'type', 'ucCategory'];
-
-        Object.keys(entry).forEach((key) => {
-            if (!knownFields.includes(key)) {
-                this.options.consent[key] = entry[key] === true;
-            }
-        });
-
-        this._emitConsentStatusEvent();
-    }
-
-    /**
-     *
-     * Open privacy center to change consent
-     * @protected
-     */
-    _openPrivacyCenter() {
-        if (window.UC_UI?.showSecondLayer) {
-            window.UC_UI.showSecondLayer();
         }
     }
 }
@@ -1269,14 +1186,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ConsentDependentElementHelper: () => (/* reexport safe */ _src_scripts_ConsentDependentElementHelper_js__WEBPACK_IMPORTED_MODULE_0__.ConsentDependentElementHelper),
 /* harmony export */   CookiebotConsent: () => (/* reexport safe */ _src_scripts_CookiebotConsent_js__WEBPACK_IMPORTED_MODULE_1__.CookiebotConsent),
-/* harmony export */   OneTrustConsent: () => (/* reexport safe */ _src_scripts_OneTrustConsent_js__WEBPACK_IMPORTED_MODULE_2__.OneTrustConsent),
-/* harmony export */   UsercentricsConsent: () => (/* reexport safe */ _src_scripts_UsercentricsConsent_js__WEBPACK_IMPORTED_MODULE_3__.UsercentricsConsent)
+/* harmony export */   OneTrustConsent: () => (/* reexport safe */ _src_scripts_OneTrustConsent_js__WEBPACK_IMPORTED_MODULE_2__.OneTrustConsent)
 /* harmony export */ });
 /* harmony import */ var _src_scripts_ConsentDependentElementHelper_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/scripts/ConsentDependentElementHelper.js */ "./src/scripts/ConsentDependentElementHelper.js");
 /* harmony import */ var _src_scripts_CookiebotConsent_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./src/scripts/CookiebotConsent.js */ "./src/scripts/CookiebotConsent.js");
 /* harmony import */ var _src_scripts_OneTrustConsent_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/scripts/OneTrustConsent.js */ "./src/scripts/OneTrustConsent.js");
-/* harmony import */ var _src_scripts_UsercentricsConsent_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./src/scripts/UsercentricsConsent.js */ "./src/scripts/UsercentricsConsent.js");
-
 
 
 
@@ -1288,5 +1202,4 @@ __webpack_require__.r(__webpack_exports__);
 const __webpack_exports__ConsentDependentElementHelper = __webpack_exports__.ConsentDependentElementHelper;
 const __webpack_exports__CookiebotConsent = __webpack_exports__.CookiebotConsent;
 const __webpack_exports__OneTrustConsent = __webpack_exports__.OneTrustConsent;
-const __webpack_exports__UsercentricsConsent = __webpack_exports__.UsercentricsConsent;
-export { __webpack_exports__ConsentDependentElementHelper as ConsentDependentElementHelper, __webpack_exports__CookiebotConsent as CookiebotConsent, __webpack_exports__OneTrustConsent as OneTrustConsent, __webpack_exports__UsercentricsConsent as UsercentricsConsent };
+export { __webpack_exports__ConsentDependentElementHelper as ConsentDependentElementHelper, __webpack_exports__CookiebotConsent as CookiebotConsent, __webpack_exports__OneTrustConsent as OneTrustConsent };

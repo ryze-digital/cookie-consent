@@ -27,21 +27,40 @@ __webpack_require__.r(__webpack_exports__);
  *   data-tag-manager="google"
  *   src="../dist/CookieConsentTagManager.js"
  *   id="GTM-WBXVSWR"
+ *   data-nonce="randomNonceValue"
  * ></script>
  */
 class CookieConsentTagManager {
+    /**
+     * @type {HTMLElement}
+     */
     #element;
 
+    /**
+     * @type {string}
+     */
     #trackingId;
 
+    /**
+     * @type {'google' | 'matomo'}
+     */
     #trackingType;
 
+    /**
+     * @type {object}
+     */
     #acceptedCookies;
+
+    /**
+     * @type {string}
+     */
+    #nonce;
 
     constructor() {
         this.#element = document.querySelector('[data-tag-manager]');
-        this.#trackingId = this.#element.getAttribute('id');
-        this.#trackingType = this.#element.getAttribute('data-tag-manager');
+        this.#trackingId = this.#element.id;
+        this.#trackingType = this.#element.dataset.tagManager;
+        this.#nonce = this.#element.dataset.nonce;
         this.#acceptedCookies = {};
 
         if (this.#element === null || !this.#trackingId) {
@@ -87,13 +106,14 @@ class CookieConsentTagManager {
     /**
      *
      * @param {string} html
-     * @param {string} position
+     * @param {'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend'} position
      */
     #insertScript(html, position = 'afterend') {
         const script = document.createElement('script');
 
         script.innerHTML = html;
         script.type = 'text/javascript';
+        script.nonce = this.#nonce;
 
         this.#element.insertAdjacentElement(position, script);
     }

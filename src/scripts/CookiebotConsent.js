@@ -13,6 +13,13 @@ export class CookiebotConsent extends CookieConsent {
             privacyUrlIdentifier: '#CybotCookiebotDialogDetailBodyContentTextAbout a'
         });
 
+        if (this.options.el.hasAttribute('data-cbid') === false ||
+            this.options.el.getAttribute('data-cbid') === '') {
+            console.warn('Cookiebot project id not found. Please provide Cookiebot project id in data-cbid attribute.');
+
+            return;
+        }
+
         this.#initUserBehaviourEvent();
     }
 

@@ -17,6 +17,9 @@ export default () => {
         },
         experiments: {
             outputModule: true
+        },
+        watchOptions: {
+            poll: true
         }
     };
 };
