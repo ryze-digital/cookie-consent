@@ -88,7 +88,7 @@ class CookieConsentTagManager {
             security_storage: 'granted',
         };
 
-        if (localStorage.getItem('consentMode') !== null) {
+        if (localStorage.getItem('consentMode') !== null && this.#platformCookieExist() === true) {
             consentMode = JSON.parse(localStorage.getItem('consentMode'));
         }
 
@@ -187,6 +187,22 @@ class CookieConsentTagManager {
         // google tag manager
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push(data);
+    }
+
+    /**
+     *
+     * @returns {boolean}
+     */
+    #platformCookieExist() {
+        const platformCookieMap = [
+            'CookieConsent', // Cookiebot
+            'OptanonConsent', // OneTrust
+            'ucString', // Usercentrics
+        ];
+
+        return platformCookieMap.some(cookieName =>
+            document.cookie.includes(`${cookieName}=`) || localStorage.getItem(cookieName)
+        );
     }
 }
 
