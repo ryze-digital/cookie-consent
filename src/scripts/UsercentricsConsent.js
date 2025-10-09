@@ -26,6 +26,7 @@ export class UsercentricsConsent extends CookieConsent {
 
         if (rulesetIdAttr === '' && settingsIdAttr === '') {
             console.warn('Usercentrics project id not found. Please provide Usercentrics project id in data-ruleset-id or data-settings-id attribute.');
+
             return;
         }
 

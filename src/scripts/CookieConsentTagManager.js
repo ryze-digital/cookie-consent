@@ -220,9 +220,9 @@ class CookieConsentTagManager {
             'ucString', // Usercentrics
         ];
 
-        return platformCookieMap.some(cookieName =>
-            document.cookie.includes(`${cookieName}=`) || localStorage.getItem(cookieName)
-        );
+        return platformCookieMap.some((cookieName) => {
+            return document.cookie.includes(`${cookieName}=`) || localStorage.getItem(cookieName);
+        });
     }
 }
 
