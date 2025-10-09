@@ -1159,6 +1159,7 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
 
         if (rulesetIdAttr === '' && settingsIdAttr === '') {
             console.warn('Usercentrics project id not found. Please provide Usercentrics project id in data-ruleset-id or data-settings-id attribute.');
+
             return;
         }
 
