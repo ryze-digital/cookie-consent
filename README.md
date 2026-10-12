@@ -228,6 +228,20 @@ vendors: {
 }
 ```
 
+And exclude it from transpiling.
+
+```js
+{
+    test: /\.(js|mjs)$/,
+    exclude: [
+        /[\\/]@ryze-digital[\\/]cookie-consent[\\/]dist[\\/]/
+    ],
+    use: {
+        loader: 'babel-loader'
+    }
+}
+```
+
 ### Google Tag Manager
 
 Apart from custom data, this library also supports Google consent mode. This means that it pushes consent mode data in
