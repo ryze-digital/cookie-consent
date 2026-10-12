@@ -131,6 +131,13 @@ export class CookieConsent extends Base {
             const script = document.createElement('script');
 
             script.innerHTML = el.innerHTML;
+
+            Array.from(el.attributes).forEach((attribute) => {
+                if (attribute.name !== 'type') {
+                    script.setAttribute(attribute.name, attribute.value);
+                }
+            });
+
             script.type = 'text/javascript';
 
             el.insertAdjacentElement('afterend', script);
