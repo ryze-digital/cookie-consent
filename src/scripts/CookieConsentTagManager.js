@@ -36,7 +36,7 @@ class CookieConsentTagManager {
     #nonce;
 
     constructor() {
-        this.#element = document.querySelector('[data-tag-manager]');
+        this.#element = document.querySelector("[data-tag-manager]");
         this.#trackingId = this.#element.id;
         this.#trackingType = this.#element.dataset.tagManager;
         this.#nonce = this.#element.dataset.nonce;
@@ -47,10 +47,10 @@ class CookieConsentTagManager {
         }
 
         switch (this.#trackingType) {
-            case 'google':
+            case "google":
                 this.#initGoogleTag();
                 break;
-            case 'matomo':
+            case "matomo":
                 this.#initMatomoTag();
                 break;
         }
@@ -68,10 +68,13 @@ class CookieConsentTagManager {
     }
 
     #initGoogleTag() {
-        this.#insertScript(`
+        this.#insertScript(
+            `
             window.dataLayer = window.dataLayer || [];
             function gtag() {dataLayer.push(arguments);}
-        `, 'beforebegin');
+        `,
+            "beforebegin",
+        );
         this.#initDefaultGoogleConsent();
         this.#insertScript(`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -87,11 +90,11 @@ class CookieConsentTagManager {
      * @param {string} html
      * @param {'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend'} position
      */
-    #insertScript(html, position = 'afterend') {
-        const script = document.createElement('script');
+    #insertScript(html, position = "afterend") {
+        const script = document.createElement("script");
 
         script.innerHTML = html;
-        script.type = 'text/javascript';
+        script.type = "text/javascript";
         script.nonce = this.#nonce;
 
         this.#element.insertAdjacentElement(position, script);
@@ -99,28 +102,28 @@ class CookieConsentTagManager {
 
     #initDefaultGoogleConsent() {
         let consentMode = {
-            ad_storage: 'denied',
-            ad_user_data: 'denied',
-            ad_personalization: 'denied',
-            analytics_storage: 'denied',
-            personalization_storage: 'denied',
-            functionality_storage: 'denied',
-            security_storage: 'granted',
+            ad_storage: "denied",
+            ad_user_data: "denied",
+            ad_personalization: "denied",
+            analytics_storage: "denied",
+            personalization_storage: "denied",
+            functionality_storage: "denied",
+            security_storage: "granted",
         };
 
-        if (localStorage.getItem('consentMode') !== null && this.#platformCookieExist() === true) {
-            consentMode = JSON.parse(localStorage.getItem('consentMode'));
+        if (localStorage.getItem("consentMode") !== null && this.#platformCookieExist() === true) {
+            consentMode = JSON.parse(localStorage.getItem("consentMode"));
         }
 
-        window.gtag('consent', 'default', consentMode);
+        window.gtag("consent", "default", consentMode);
     }
 
     #bindEvents() {
-        window.addEventListener('cookieConsentStatus', (event) => {
+        window.addEventListener("cookieConsentStatus", (event) => {
             this.#pushDatalayerData(event.detail.consent);
 
             this.#push({
-                event: 'cookieUpdate'
+                event: "cookieUpdate",
             });
         });
     }
@@ -133,7 +136,7 @@ class CookieConsentTagManager {
      * @param {boolean} [consent.statistics]
      */
     #pushDatalayerData(consent) {
-        if (this.#trackingType === 'google') {
+        if (this.#trackingType === "google") {
             this.#updateGoogleConsentData(consent);
         }
 
@@ -149,17 +152,17 @@ class CookieConsentTagManager {
      */
     #updateGoogleConsentData(consent) {
         const consentMode = {
-            ad_storage: consent.marketing ? 'granted' : 'denied',
-            ad_user_data: consent.marketing ? 'granted' : 'denied',
-            ad_personalization: consent.marketing ? 'granted' : 'denied',
-            analytics_storage: consent.statistics ? 'granted' : 'denied',
-            functionality_storage: consent.preferences ? 'granted' : 'denied',
-            personalization_storage: consent.preferences ? 'granted' : 'denied',
-            security_storage: 'granted',
+            ad_storage: consent.marketing ? "granted" : "denied",
+            ad_user_data: consent.marketing ? "granted" : "denied",
+            ad_personalization: consent.marketing ? "granted" : "denied",
+            analytics_storage: consent.statistics ? "granted" : "denied",
+            functionality_storage: consent.preferences ? "granted" : "denied",
+            personalization_storage: consent.preferences ? "granted" : "denied",
+            security_storage: "granted",
         };
 
-        window.gtag('consent', 'update', consentMode);
-        localStorage.setItem('consentMode', JSON.stringify(consentMode));
+        window.gtag("consent", "update", consentMode);
+        localStorage.setItem("consentMode", JSON.stringify(consentMode));
     }
 
     /**
@@ -185,7 +188,7 @@ class CookieConsentTagManager {
 
                 this.#push({
                     event: eventName,
-                    [eventName]: eventValue
+                    [eventName]: eventValue,
                 });
             }
 
@@ -199,7 +202,7 @@ class CookieConsentTagManager {
      */
     #push(data) {
         // matomo tag manager
-        if (typeof window.MatomoTagManager === 'object') {
+        if (typeof window.MatomoTagManager === "object") {
             window._mtm = window._mtm || [];
             window._mtm.push(data);
         }
@@ -215,9 +218,9 @@ class CookieConsentTagManager {
      */
     #platformCookieExist() {
         const platformCookieMap = [
-            'CookieConsent', // Cookiebot
-            'OptanonConsent', // OneTrust
-            'ucString', // Usercentrics
+            "CookieConsent", // Cookiebot
+            "OptanonConsent", // OneTrust
+            "ucString", // Usercentrics
         ];
 
         return platformCookieMap.some((cookieName) => {

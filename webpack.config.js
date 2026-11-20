@@ -1,25 +1,25 @@
-import path from 'path';
+import path from "path";
 
 export default () => {
     return {
         devtool: false,
-        mode: 'development',
+        mode: "development",
         entry: {
-            CookieConsent: ['./index'],
-            CookieConsentTagManager: ['./src/scripts/CookieConsentTagManager']
+            CookieConsent: ["./index"],
+            CookieConsentTagManager: ["./src/scripts/CookieConsentTagManager"],
         },
         output: {
-            path: path.resolve('./dist'),
-            filename: '[name].js',
+            path: path.resolve("./dist"),
+            filename: "[name].js",
             library: {
-                type: 'module',
-            }
+                type: "module",
+            },
         },
         experiments: {
-            outputModule: true
+            outputModule: true,
         },
         watchOptions: {
-            poll: true
-        }
+            poll: true,
+        },
     };
 };

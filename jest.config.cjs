@@ -1,6 +1,6 @@
 module.exports = {
-    testEnvironment: 'jsdom',
+    testEnvironment: "jsdom",
     verbose: true,
-    coverageReporters: ['text', 'html', 'clover'],
-    reporters: ['default', 'jest-junit']
-}
+    coverageReporters: ["text", "html", "clover"],
+    reporters: ["default", "jest-junit"],
+};
