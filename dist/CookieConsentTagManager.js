@@ -1,24 +1,18 @@
 /******/ // The require scope
-/******/ var __webpack_require__ = {};
+/******/ const __webpack_require__ = {};
 /******/ 
 /************************************************************************/
 /******/ /* webpack/runtime/make namespace object */
-/******/ (() => {
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = (exports) => {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/ })();
+/******/ // define __esModule on exports
+/******/ __webpack_require__.r = (exports) => {
+/******/ 	Object.defineProperties(exports, { [Symbol.toStringTag]: { value: 'Module' }, __esModule: { value: true } });
+/******/ };
 /******/ 
 /************************************************************************/
-var __webpack_exports__ = {};
+let __webpack_exports__ = {};
 /*!************************************************!*\
   !*** ./src/scripts/CookieConsentTagManager.js ***!
   \************************************************/
-__webpack_require__.r(__webpack_exports__);
 /**
  *
  * Load Google tag manager with consent mode or Matomo tag manager
