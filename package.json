@@ -43,5 +43,9 @@
     "cookiebot",
     "onetrust",
     "cookieconsent"
-  ]
+  ],
+  "engines": {
+    "node": ">=24.15",
+    "npm": ">=11"
+  }
 }
