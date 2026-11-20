@@ -634,13 +634,13 @@ __webpack_require__.r(__webpack_exports__);
  */
 class ConsentDependentElementHelper {
     constructor() {
-        this.consentCategory = '';
+        this.consentCategory = "";
 
         this.#bindEvents();
     }
 
     #bindEvents() {
-        window.addEventListener('cookieConsentStatus', (event) => {
+        window.addEventListener("cookieConsentStatus", (event) => {
             if (_CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.CookieConsent.isConsentRequired(this.consentCategory, event.detail.consent) === false) {
                 this.allowedByCookieConsent();
 
@@ -663,6 +663,7 @@ class ConsentDependentElementHelper {
      */
     disallowedByCookieConsent() {}
 }
+
 
 /***/ }),
 
@@ -700,17 +701,20 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
      */
     constructor(options = {}) {
         if (new.target === CookieConsent) {
-            throw new TypeError('Cannot construct Abstract instances directly');
+            throw new TypeError("Cannot construct Abstract instances directly");
         }
 
-        super({
-            el: document.querySelector('[data-cookie-consent]'),
-            consent: {
-                marketing: false,
-                preferences: false,
-                statistics: false
-            }
-        }, options);
+        super(
+            {
+                el: document.querySelector("[data-cookie-consent]"),
+                consent: {
+                    marketing: false,
+                    preferences: false,
+                    statistics: false,
+                },
+            },
+            options,
+        );
 
         this.#isBannerElementVisible = false;
 
@@ -723,14 +727,14 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
     }
 
     #bindEvents() {
-        window.addEventListener('cookieConsentStatus', (event) => {
+        window.addEventListener("cookieConsentStatus", (event) => {
             this.#updatePlaceholders(event.detail.consent);
             this.#updateScripts(event.detail.consent);
             this.#updateIframes(event.detail.consent);
         });
 
-        document.addEventListener('click', (event) => {
-            if (event.target && event.target.hasAttribute('data-cookie-preference-center')) {
+        document.addEventListener("click", (event) => {
+            if (event.target && event.target.hasAttribute("data-cookie-preference-center")) {
                 this._openPrivacyCenter();
             }
         });
@@ -738,13 +742,13 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
 
     #updateBannerPrivacyUrl() {
         const privacyUrlElement = document.querySelector(this.options.privacyUrlIdentifier);
-        const privacyUrl = this.options.el.getAttribute('data-privacy-url');
+        const privacyUrl = this.options.el.getAttribute("data-privacy-url");
 
         if (privacyUrlElement === null || privacyUrl === null) {
             return;
         }
 
-        privacyUrlElement.setAttribute('href', privacyUrl);
+        privacyUrlElement.setAttribute("href", privacyUrl);
     }
 
     /**
@@ -755,18 +759,20 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
      * @param {boolean} [consentModel.statistics]
      */
     #updatePlaceholders(consentModel) {
-        const consentRequiredElements = document.querySelectorAll('[data-cookieconsent]:not(script):not([data-cookieconsent="ignore"])');
-        let placeholderText = this.options.el.getAttribute('data-text-placeholder');
+        const consentRequiredElements = document.querySelectorAll(
+            '[data-cookieconsent]:not(script):not([data-cookieconsent="ignore"])',
+        );
+        let placeholderText = this.options.el.getAttribute("data-text-placeholder");
 
         if (!placeholderText) {
             return;
         }
 
         consentRequiredElements.forEach((el) => {
-            const consents = el.getAttribute('data-cookieconsent');
-            const contentPlaceholderText = el.getAttribute('data-cookie-placeholder-text');
+            const consents = el.getAttribute("data-cookieconsent");
+            const contentPlaceholderText = el.getAttribute("data-cookie-placeholder-text");
 
-            if (el.previousElementSibling && el.previousElementSibling.classList.contains('cookie-placeholder')) {
+            if (el.previousElementSibling && el.previousElementSibling.classList.contains("cookie-placeholder")) {
                 el.previousElementSibling.remove();
             }
 
@@ -786,7 +792,7 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
                 </div>
             `;
 
-            el.insertAdjacentHTML('beforebegin', placeholderMarkup);
+            el.insertAdjacentHTML("beforebegin", placeholderMarkup);
         });
     }
 
@@ -801,18 +807,25 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
         const scripts = document.querySelectorAll('script[type="text/plain"][data-cookieconsent]');
 
         scripts.forEach((el) => {
-            const consents = el.getAttribute('data-cookieconsent');
+            const consents = el.getAttribute("data-cookieconsent");
 
             if (this.constructor.isConsentRequired(consents, consentModel) === true) {
                 return;
             }
 
-            const script = document.createElement('script');
+            const script = document.createElement("script");
 
             script.innerHTML = el.innerHTML;
-            script.type = 'text/javascript';
 
-            el.insertAdjacentElement('afterend', script);
+            Array.from(el.attributes).forEach((attribute) => {
+                if (attribute.name !== "type") {
+                    script.setAttribute(attribute.name, attribute.value);
+                }
+            });
+
+            script.type = "text/javascript";
+
+            el.insertAdjacentElement("afterend", script);
             el.remove();
         });
     }
@@ -825,16 +838,19 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
      * @param {boolean} [consentModel.statistics]
      */
     #updateIframes(consentModel) {
-        const iframes = document.querySelectorAll('iframe[data-src][data-cookieconsent]');
+        const iframes = document.querySelectorAll("iframe[data-src][data-cookieconsent]");
 
         iframes.forEach((iframe) => {
-            const consents = iframe.getAttribute('data-cookieconsent');
+            const consents = iframe.getAttribute("data-cookieconsent");
 
-            if (this.constructor.isConsentRequired(consents, consentModel) === true || iframe.getAttribute('src') !== null) {
+            if (
+                this.constructor.isConsentRequired(consents, consentModel) === true ||
+                iframe.getAttribute("src") !== null
+            ) {
                 return;
             }
 
-            iframe.setAttribute('src', iframe.getAttribute('data-src'));
+            iframe.setAttribute("src", iframe.getAttribute("data-src"));
         });
     }
 
@@ -844,8 +860,8 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
      * @protected
      */
     _initBannerEvents() {
-        if (document.readyState !== 'interactive') {
-            document.addEventListener('DOMContentLoaded', () => {
+        if (document.readyState !== "interactive") {
+            document.addEventListener("DOMContentLoaded", () => {
                 this._testBannerVisibility();
             });
 
@@ -863,7 +879,12 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
     _testBannerVisibility() {
         const bannerElement = document.querySelector(this.options.bannerIdentifier);
 
-        if (!this.#isBannerElementVisible && bannerElement !== null && bannerElement.offsetWidth > 0 && bannerElement.offsetHeight > 0) {
+        if (
+            !this.#isBannerElementVisible &&
+            bannerElement !== null &&
+            bannerElement.offsetWidth > 0 &&
+            bannerElement.offsetHeight > 0
+        ) {
             this.#isBannerElementVisible = true;
 
             this._emitBannerVisibilityEvent();
@@ -887,7 +908,7 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
          * @property {boolean} [consent.preferences=false]
          * @property {boolean} [consent.statistics=false]
          */
-        this.emitEvent('cookieConsentStatus', { consent: this.options.consent }, window);
+        this.emitEvent("cookieConsentStatus", { consent: this.options.consent }, window);
     }
 
     /**
@@ -902,7 +923,7 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
          * @event CookieConsent#cookieBannerVisible
          * @type {object}
          */
-        this.emitEvent('cookieBannerVisible', {}, window);
+        this.emitEvent("cookieBannerVisible", {}, window);
     }
 
     /**
@@ -936,6 +957,7 @@ class CookieConsent extends _ryze_digital_js_utilities__WEBPACK_IMPORTED_MODULE_
     }
 }
 
+
 /***/ }),
 
 /***/ "./src/scripts/CookiebotConsent.js":
@@ -960,13 +982,12 @@ __webpack_require__.r(__webpack_exports__);
 class CookiebotConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.CookieConsent {
     constructor() {
         super({
-            bannerIdentifier: '#CybotCookiebotDialog',
-            privacyUrlIdentifier: '#CybotCookiebotDialogDetailBodyContentTextAbout a'
+            bannerIdentifier: "#CybotCookiebotDialog",
+            privacyUrlIdentifier: "#CybotCookiebotDialogDetailBodyContentTextAbout a",
         });
 
-        if (this.options.el.hasAttribute('data-cbid') === false ||
-            this.options.el.getAttribute('data-cbid') === '') {
-            console.warn('Cookiebot project id not found. Please provide Cookiebot project id in data-cbid attribute.');
+        if (this.options.el.hasAttribute("data-cbid") === false || this.options.el.getAttribute("data-cbid") === "") {
+            console.warn("Cookiebot project id not found. Please provide Cookiebot project id in data-cbid attribute.");
 
             return;
         }
@@ -977,15 +998,15 @@ class CookiebotConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Co
     #initUserBehaviourEvent() {
         this.#checkForConsentStatus();
 
-        window.addEventListener('CookiebotOnDialogInit', () => {
+        window.addEventListener("CookiebotOnDialogInit", () => {
             this.#checkForConsentStatus();
         });
 
-        window.addEventListener('CookiebotOnAccept', () => {
+        window.addEventListener("CookiebotOnAccept", () => {
             this.#checkForConsentStatus();
         });
 
-        window.addEventListener('CookiebotOnDecline', () => {
+        window.addEventListener("CookiebotOnDecline", () => {
             this.#checkForConsentStatus();
         });
     }
@@ -1006,7 +1027,7 @@ class CookiebotConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Co
      * @protected
      */
     _initBannerEvents() {
-        window.addEventListener('CookiebotOnDialogDisplay', () => {
+        window.addEventListener("CookiebotOnDialogDisplay", () => {
             this._testBannerVisibility();
         });
 
@@ -1024,6 +1045,7 @@ class CookiebotConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Co
         }
     }
 }
+
 
 /***/ }),
 
@@ -1051,21 +1073,25 @@ class OneTrustConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Coo
 
     constructor() {
         super({
-            bannerIdentifier: '#onetrust-banner-sdk',
-            privacyUrlIdentifier: '#onetrust-policy-text a'
+            bannerIdentifier: "#onetrust-banner-sdk",
+            privacyUrlIdentifier: "#onetrust-policy-text a",
         });
 
-        if (this.options.el.hasAttribute('data-domain-script') === false ||
-            this.options.el.getAttribute('data-domain-script') === '') {
-            console.warn('OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.');
+        if (
+            this.options.el.hasAttribute("data-domain-script") === false ||
+            this.options.el.getAttribute("data-domain-script") === ""
+        ) {
+            console.warn(
+                "OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.",
+            );
 
             return;
         }
 
         this.#consentCategoryMap = {
-            preferences: 'C0003',
-            marketing: 'C0004',
-            statistics: 'C0002'
+            preferences: "C0003",
+            marketing: "C0004",
+            statistics: "C0002",
         };
 
         this.#initUserBehaviourEvent();
@@ -1074,15 +1100,15 @@ class OneTrustConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Coo
     #initUserBehaviourEvent() {
         this.#checkForConsentStatus();
 
-        window.addEventListener('OneTrustGroupsUpdated', () => {
+        window.addEventListener("OneTrustGroupsUpdated", () => {
             this.#checkForConsentStatus();
         });
     }
 
     #checkForConsentStatus() {
         if (window.OnetrustActiveGroups) {
-            const activeGroups = window.OnetrustActiveGroups.split(',').filter((el) => {
-                return el !== '';
+            const activeGroups = window.OnetrustActiveGroups.split(",").filter((el) => {
+                return el !== "";
             });
 
             this.options.consent.preferences = activeGroups.includes(this.#consentCategoryMap.preferences);
@@ -1118,6 +1144,7 @@ class OneTrustConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__.Coo
     }
 }
 
+
 /***/ }),
 
 /***/ "./src/scripts/UsercentricsConsent.js":
@@ -1144,21 +1171,23 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
 
     constructor() {
         super({
-            bannerIdentifier: '#uc-main-dialog',
-            privacyUrlIdentifier: '[data-cookie-preference-center]'
+            bannerIdentifier: "#uc-main-dialog",
+            privacyUrlIdentifier: "[data-cookie-preference-center]",
         });
 
         this.#consentCategoryMap = {
-            preferences: 'functional',
-            marketing: 'marketing',
-            statistics: 'marketing'
+            preferences: "functional",
+            marketing: "marketing",
+            statistics: "marketing",
         };
 
-        const rulesetIdAttr = this.options.el.getAttribute('data-ruleset-id');
-        const settingsIdAttr = this.options.el.getAttribute('data-settings-id');
+        const rulesetIdAttr = this.options.el.getAttribute("data-ruleset-id");
+        const settingsIdAttr = this.options.el.getAttribute("data-settings-id");
 
-        if (rulesetIdAttr === '' && settingsIdAttr === '') {
-            console.warn('Usercentrics project id not found. Please provide Usercentrics project id in data-ruleset-id or data-settings-id attribute.');
+        if (rulesetIdAttr === "" && settingsIdAttr === "") {
+            console.warn(
+                "Usercentrics project id not found. Please provide Usercentrics project id in data-ruleset-id or data-settings-id attribute.",
+            );
 
             return;
         }
@@ -1169,13 +1198,13 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
     #initUserBehaviourEvent() {
         this.#checkForConsentStatus();
 
-        window.addEventListener('UC_UI_INITIALIZED', () => {
+        window.addEventListener("UC_UI_INITIALIZED", () => {
             setTimeout(() => {
                 this.#checkForConsentStatus();
             }, 100);
         });
 
-        window.addEventListener('UC_CONSENT', () => {
+        window.addEventListener("UC_CONSENT", () => {
             setTimeout(() => {
                 this.#checkForConsentStatus();
             }, 100);
@@ -1183,9 +1212,10 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
     }
 
     #checkForConsentStatus() {
-        const entries = window.dataLayer?.filter((dataLayerItem) => {
-            return dataLayerItem.event === 'consent_status';
-        }) || [];
+        const entries =
+            window.dataLayer?.filter((dataLayerItem) => {
+                return dataLayerItem.event === "consent_status";
+            }) || [];
         const entry = entries[entries.length - 1] || {};
         const categories = entry.ucCategory || {};
 
@@ -1193,7 +1223,7 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
         this.options.consent.marketing = categories[this.#consentCategoryMap.marketing] === true;
         this.options.consent.statistics = categories[this.#consentCategoryMap.statistics] === true;
 
-        const knownFields = ['event', 'action', 'type', 'ucCategory'];
+        const knownFields = ["event", "action", "type", "ucCategory"];
 
         Object.keys(entry).forEach((key) => {
             if (!knownFields.includes(key)) {
@@ -1215,6 +1245,7 @@ class UsercentricsConsent extends _CookieConsent_js__WEBPACK_IMPORTED_MODULE_0__
         }
     }
 }
+
 
 /***/ })
 

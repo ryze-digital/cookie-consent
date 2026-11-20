@@ -1,4 +1,4 @@
-import { CookieConsent } from './CookieConsent.js';
+import { CookieConsent } from "./CookieConsent.js";
 
 /**
  *
@@ -11,21 +11,23 @@ export class UsercentricsConsent extends CookieConsent {
 
     constructor() {
         super({
-            bannerIdentifier: '#uc-main-dialog',
-            privacyUrlIdentifier: '[data-cookie-preference-center]'
+            bannerIdentifier: "#uc-main-dialog",
+            privacyUrlIdentifier: "[data-cookie-preference-center]",
         });
 
         this.#consentCategoryMap = {
-            preferences: 'functional',
-            marketing: 'marketing',
-            statistics: 'marketing'
+            preferences: "functional",
+            marketing: "marketing",
+            statistics: "marketing",
         };
 
-        const rulesetIdAttr = this.options.el.getAttribute('data-ruleset-id');
-        const settingsIdAttr = this.options.el.getAttribute('data-settings-id');
+        const rulesetIdAttr = this.options.el.getAttribute("data-ruleset-id");
+        const settingsIdAttr = this.options.el.getAttribute("data-settings-id");
 
-        if (rulesetIdAttr === '' && settingsIdAttr === '') {
-            console.warn('Usercentrics project id not found. Please provide Usercentrics project id in data-ruleset-id or data-settings-id attribute.');
+        if (rulesetIdAttr === "" && settingsIdAttr === "") {
+            console.warn(
+                "Usercentrics project id not found. Please provide Usercentrics project id in data-ruleset-id or data-settings-id attribute.",
+            );
 
             return;
         }
@@ -36,13 +38,13 @@ export class UsercentricsConsent extends CookieConsent {
     #initUserBehaviourEvent() {
         this.#checkForConsentStatus();
 
-        window.addEventListener('UC_UI_INITIALIZED', () => {
+        window.addEventListener("UC_UI_INITIALIZED", () => {
             setTimeout(() => {
                 this.#checkForConsentStatus();
             }, 100);
         });
 
-        window.addEventListener('UC_CONSENT', () => {
+        window.addEventListener("UC_CONSENT", () => {
             setTimeout(() => {
                 this.#checkForConsentStatus();
             }, 100);
@@ -50,9 +52,10 @@ export class UsercentricsConsent extends CookieConsent {
     }
 
     #checkForConsentStatus() {
-        const entries = window.dataLayer?.filter((dataLayerItem) => {
-            return dataLayerItem.event === 'consent_status';
-        }) || [];
+        const entries =
+            window.dataLayer?.filter((dataLayerItem) => {
+                return dataLayerItem.event === "consent_status";
+            }) || [];
         const entry = entries[entries.length - 1] || {};
         const categories = entry.ucCategory || {};
 
@@ -60,7 +63,7 @@ export class UsercentricsConsent extends CookieConsent {
         this.options.consent.marketing = categories[this.#consentCategoryMap.marketing] === true;
         this.options.consent.statistics = categories[this.#consentCategoryMap.statistics] === true;
 
-        const knownFields = ['event', 'action', 'type', 'ucCategory'];
+        const knownFields = ["event", "action", "type", "ucCategory"];
 
         Object.keys(entry).forEach((key) => {
             if (!knownFields.includes(key)) {

@@ -1,4 +1,4 @@
-import { CookieConsent } from './CookieConsent.js';
+import { CookieConsent } from "./CookieConsent.js";
 
 /**
  *
@@ -9,13 +9,12 @@ import { CookieConsent } from './CookieConsent.js';
 export class CookiebotConsent extends CookieConsent {
     constructor() {
         super({
-            bannerIdentifier: '#CybotCookiebotDialog',
-            privacyUrlIdentifier: '#CybotCookiebotDialogDetailBodyContentTextAbout a'
+            bannerIdentifier: "#CybotCookiebotDialog",
+            privacyUrlIdentifier: "#CybotCookiebotDialogDetailBodyContentTextAbout a",
         });
 
-        if (this.options.el.hasAttribute('data-cbid') === false ||
-            this.options.el.getAttribute('data-cbid') === '') {
-            console.warn('Cookiebot project id not found. Please provide Cookiebot project id in data-cbid attribute.');
+        if (this.options.el.hasAttribute("data-cbid") === false || this.options.el.getAttribute("data-cbid") === "") {
+            console.warn("Cookiebot project id not found. Please provide Cookiebot project id in data-cbid attribute.");
 
             return;
         }
@@ -26,15 +25,15 @@ export class CookiebotConsent extends CookieConsent {
     #initUserBehaviourEvent() {
         this.#checkForConsentStatus();
 
-        window.addEventListener('CookiebotOnDialogInit', () => {
+        window.addEventListener("CookiebotOnDialogInit", () => {
             this.#checkForConsentStatus();
         });
 
-        window.addEventListener('CookiebotOnAccept', () => {
+        window.addEventListener("CookiebotOnAccept", () => {
             this.#checkForConsentStatus();
         });
 
-        window.addEventListener('CookiebotOnDecline', () => {
+        window.addEventListener("CookiebotOnDecline", () => {
             this.#checkForConsentStatus();
         });
     }
@@ -55,7 +54,7 @@ export class CookiebotConsent extends CookieConsent {
      * @protected
      */
     _initBannerEvents() {
-        window.addEventListener('CookiebotOnDialogDisplay', () => {
+        window.addEventListener("CookiebotOnDialogDisplay", () => {
             this._testBannerVisibility();
         });
 

@@ -1,4 +1,4 @@
-import { CookieConsent } from './CookieConsent.js';
+import { CookieConsent } from "./CookieConsent.js";
 
 /**
  *
@@ -8,13 +8,13 @@ import { CookieConsent } from './CookieConsent.js';
  */
 export class ConsentDependentElementHelper {
     constructor() {
-        this.consentCategory = '';
+        this.consentCategory = "";
 
         this.#bindEvents();
     }
 
     #bindEvents() {
-        window.addEventListener('cookieConsentStatus', (event) => {
+        window.addEventListener("cookieConsentStatus", (event) => {
             if (CookieConsent.isConsentRequired(this.consentCategory, event.detail.consent) === false) {
                 this.allowedByCookieConsent();
 
