@@ -8,10 +8,10 @@
   "type": "module",
   "repository": "github:ryze-digital/cookie-consent",
   "scripts": {
-    "lint": "npm-run-all --parallel lint:*",
-    "lint:scripts": "eslint src/scripts/**",
-    "lint-fix": "npm-run-all --parallel lint-fix:*",
-    "lint-fix:scripts": "npm run lint:scripts -- --fix",
+    "lint": "npm run lint:scripts",
+    "lint:scripts": "prettier src/scripts tests/scripts ./*.js --check && eslint src/scripts tests/scripts ./*.js",
+    "lint-fix": "npm run lint-fix:scripts",
+    "lint-fix:scripts": "prettier src/scripts tests/scripts ./*.js --write && npm run lint:scripts -- --fix",
     "test": "npm run test:scripts",
     "test:scripts": "jest",
     "test:scripts:coverage": "jest --coverage",
@@ -24,16 +24,18 @@
     "prebuild": "node pre-build.js"
   },
   "dependencies": {
-    "@ryze-digital/js-utilities": "^1.1.0"
+    "@ryze-digital/js-utilities": "^1.3.0"
   },
   "devDependencies": {
-    "@ryze-digital/eslint-config-website": "^1.0.1",
-    "jest": "^30.2.0",
-    "jest-environment-jsdom": "^30.2.0",
-    "jest-junit": "^16.0.0",
-    "npm-run-all": "^4.1.5",
-    "webpack": "^5.102.1",
-    "webpack-cli": "^6.0.1"
+    "@ryze-digital/eslint-config-website": "^2.0.0",
+    "@ryze-digital/prettier-config-website": "^2.0.0",
+    "jest": "^30.5.2",
+    "jest-environment-jsdom": "^30.5.2",
+    "jest-junit": "^17.0.0",
+    "jsdoc": "^4.0.5",
+    "npm-run-all2": "^9.0.4",
+    "webpack": "^5.113.0",
+    "webpack-cli": "^7.3.1"
   },
   "keywords": [
     "javascript",
@@ -41,5 +43,9 @@
     "cookiebot",
     "onetrust",
     "cookieconsent"
-  ]
+  ],
+  "engines": {
+    "node": ">=24.15",
+    "npm": ">=11"
+  }
 }

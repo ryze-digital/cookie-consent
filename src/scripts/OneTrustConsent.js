@@ -1,4 +1,4 @@
-import { CookieConsent } from './CookieConsent.js';
+import { CookieConsent } from "./CookieConsent.js";
 
 /**
  *
@@ -11,21 +11,25 @@ export class OneTrustConsent extends CookieConsent {
 
     constructor() {
         super({
-            bannerIdentifier: '#onetrust-banner-sdk',
-            privacyUrlIdentifier: '#onetrust-policy-text a'
+            bannerIdentifier: "#onetrust-banner-sdk",
+            privacyUrlIdentifier: "#onetrust-policy-text a",
         });
 
-        if (this.options.el.hasAttribute('data-domain-script') === false ||
-            this.options.el.getAttribute('data-domain-script') === '') {
-            console.warn('OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.');
+        if (
+            this.options.el.hasAttribute("data-domain-script") === false ||
+            this.options.el.getAttribute("data-domain-script") === ""
+        ) {
+            console.warn(
+                "OneTrust project id not found. Please provide OneTrust project id in data-domain-script attribute.",
+            );
 
             return;
         }
 
         this.#consentCategoryMap = {
-            preferences: 'C0003',
-            marketing: 'C0004',
-            statistics: 'C0002'
+            preferences: "C0003",
+            marketing: "C0004",
+            statistics: "C0002",
         };
 
         this.#initUserBehaviourEvent();
@@ -34,15 +38,15 @@ export class OneTrustConsent extends CookieConsent {
     #initUserBehaviourEvent() {
         this.#checkForConsentStatus();
 
-        window.addEventListener('OneTrustGroupsUpdated', () => {
+        window.addEventListener("OneTrustGroupsUpdated", () => {
             this.#checkForConsentStatus();
         });
     }
 
     #checkForConsentStatus() {
         if (window.OnetrustActiveGroups) {
-            const activeGroups = window.OnetrustActiveGroups.split(',').filter((el) => {
-                return el !== '';
+            const activeGroups = window.OnetrustActiveGroups.split(",").filter((el) => {
+                return el !== "";
             });
 
             this.options.consent.preferences = activeGroups.includes(this.#consentCategoryMap.preferences);

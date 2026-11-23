@@ -1,4 +1,4 @@
-import { Base } from '@ryze-digital/js-utilities';
+import { Base } from "@ryze-digital/js-utilities";
 
 /**
  *
@@ -21,17 +21,20 @@ export class CookieConsent extends Base {
      */
     constructor(options = {}) {
         if (new.target === CookieConsent) {
-            throw new TypeError('Cannot construct Abstract instances directly');
+            throw new TypeError("Cannot construct Abstract instances directly");
         }
 
-        super({
-            el: document.querySelector('[data-cookie-consent]'),
-            consent: {
-                marketing: false,
-                preferences: false,
-                statistics: false
-            }
-        }, options);
+        super(
+            {
+                el: document.querySelector("[data-cookie-consent]"),
+                consent: {
+                    marketing: false,
+                    preferences: false,
+                    statistics: false,
+                },
+            },
+            options,
+        );
 
         this.#isBannerElementVisible = false;
 
@@ -44,14 +47,14 @@ export class CookieConsent extends Base {
     }
 
     #bindEvents() {
-        window.addEventListener('cookieConsentStatus', (event) => {
+        window.addEventListener("cookieConsentStatus", (event) => {
             this.#updatePlaceholders(event.detail.consent);
             this.#updateScripts(event.detail.consent);
             this.#updateIframes(event.detail.consent);
         });
 
-        document.addEventListener('click', (event) => {
-            if (event.target && event.target.hasAttribute('data-cookie-preference-center')) {
+        document.addEventListener("click", (event) => {
+            if (event.target && event.target.hasAttribute("data-cookie-preference-center")) {
                 this._openPrivacyCenter();
             }
         });
@@ -59,13 +62,13 @@ export class CookieConsent extends Base {
 
     #updateBannerPrivacyUrl() {
         const privacyUrlElement = document.querySelector(this.options.privacyUrlIdentifier);
-        const privacyUrl = this.options.el.getAttribute('data-privacy-url');
+        const privacyUrl = this.options.el.getAttribute("data-privacy-url");
 
         if (privacyUrlElement === null || privacyUrl === null) {
             return;
         }
 
-        privacyUrlElement.setAttribute('href', privacyUrl);
+        privacyUrlElement.setAttribute("href", privacyUrl);
     }
 
     /**
@@ -76,18 +79,20 @@ export class CookieConsent extends Base {
      * @param {boolean} [consentModel.statistics]
      */
     #updatePlaceholders(consentModel) {
-        const consentRequiredElements = document.querySelectorAll('[data-cookieconsent]:not(script):not([data-cookieconsent="ignore"])');
-        let placeholderText = this.options.el.getAttribute('data-text-placeholder');
+        const consentRequiredElements = document.querySelectorAll(
+            '[data-cookieconsent]:not(script):not([data-cookieconsent="ignore"])',
+        );
+        let placeholderText = this.options.el.getAttribute("data-text-placeholder");
 
         if (!placeholderText) {
             return;
         }
 
         consentRequiredElements.forEach((el) => {
-            const consents = el.getAttribute('data-cookieconsent');
-            const contentPlaceholderText = el.getAttribute('data-cookie-placeholder-text');
+            const consents = el.getAttribute("data-cookieconsent");
+            const contentPlaceholderText = el.getAttribute("data-cookie-placeholder-text");
 
-            if (el.previousElementSibling && el.previousElementSibling.classList.contains('cookie-placeholder')) {
+            if (el.previousElementSibling && el.previousElementSibling.classList.contains("cookie-placeholder")) {
                 el.previousElementSibling.remove();
             }
 
@@ -107,7 +112,7 @@ export class CookieConsent extends Base {
                 </div>
             `;
 
-            el.insertAdjacentHTML('beforebegin', placeholderMarkup);
+            el.insertAdjacentHTML("beforebegin", placeholderMarkup);
         });
     }
 
@@ -122,25 +127,25 @@ export class CookieConsent extends Base {
         const scripts = document.querySelectorAll('script[type="text/plain"][data-cookieconsent]');
 
         scripts.forEach((el) => {
-            const consents = el.getAttribute('data-cookieconsent');
+            const consents = el.getAttribute("data-cookieconsent");
 
             if (this.constructor.isConsentRequired(consents, consentModel) === true) {
                 return;
             }
 
-            const script = document.createElement('script');
+            const script = document.createElement("script");
 
             script.innerHTML = el.innerHTML;
 
             Array.from(el.attributes).forEach((attribute) => {
-                if (attribute.name !== 'type') {
+                if (attribute.name !== "type") {
                     script.setAttribute(attribute.name, attribute.value);
                 }
             });
 
-            script.type = 'text/javascript';
+            script.type = "text/javascript";
 
-            el.insertAdjacentElement('afterend', script);
+            el.insertAdjacentElement("afterend", script);
             el.remove();
         });
     }
@@ -153,16 +158,19 @@ export class CookieConsent extends Base {
      * @param {boolean} [consentModel.statistics]
      */
     #updateIframes(consentModel) {
-        const iframes = document.querySelectorAll('iframe[data-src][data-cookieconsent]');
+        const iframes = document.querySelectorAll("iframe[data-src][data-cookieconsent]");
 
         iframes.forEach((iframe) => {
-            const consents = iframe.getAttribute('data-cookieconsent');
+            const consents = iframe.getAttribute("data-cookieconsent");
 
-            if (this.constructor.isConsentRequired(consents, consentModel) === true || iframe.getAttribute('src') !== null) {
+            if (
+                this.constructor.isConsentRequired(consents, consentModel) === true ||
+                iframe.getAttribute("src") !== null
+            ) {
                 return;
             }
 
-            iframe.setAttribute('src', iframe.getAttribute('data-src'));
+            iframe.setAttribute("src", iframe.getAttribute("data-src"));
         });
     }
 
@@ -172,8 +180,8 @@ export class CookieConsent extends Base {
      * @protected
      */
     _initBannerEvents() {
-        if (document.readyState !== 'interactive') {
-            document.addEventListener('DOMContentLoaded', () => {
+        if (document.readyState !== "interactive") {
+            document.addEventListener("DOMContentLoaded", () => {
                 this._testBannerVisibility();
             });
 
@@ -191,7 +199,12 @@ export class CookieConsent extends Base {
     _testBannerVisibility() {
         const bannerElement = document.querySelector(this.options.bannerIdentifier);
 
-        if (!this.#isBannerElementVisible && bannerElement !== null && bannerElement.offsetWidth > 0 && bannerElement.offsetHeight > 0) {
+        if (
+            !this.#isBannerElementVisible &&
+            bannerElement !== null &&
+            bannerElement.offsetWidth > 0 &&
+            bannerElement.offsetHeight > 0
+        ) {
             this.#isBannerElementVisible = true;
 
             this._emitBannerVisibilityEvent();
@@ -215,7 +228,7 @@ export class CookieConsent extends Base {
          * @property {boolean} [consent.preferences=false]
          * @property {boolean} [consent.statistics=false]
          */
-        this.emitEvent('cookieConsentStatus', { consent: this.options.consent }, window);
+        this.emitEvent("cookieConsentStatus", { consent: this.options.consent }, window);
     }
 
     /**
@@ -230,7 +243,7 @@ export class CookieConsent extends Base {
          * @event CookieConsent#cookieBannerVisible
          * @type {object}
          */
-        this.emitEvent('cookieBannerVisible', {}, window);
+        this.emitEvent("cookieBannerVisible", {}, window);
     }
 
     /**
