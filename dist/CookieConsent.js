@@ -104,12 +104,14 @@ class Base {
     _attachEvent(element, eventName, callback) {
         if (this._eventListeners.has(element)) {
             this._eventListeners.get(element).push({
-                [eventName]: callback
+                [eventName]: callback,
             });
         } else {
-            this._eventListeners.set(element, [{
-                [eventName]: callback
-            }]);
+            this._eventListeners.set(element, [
+                {
+                    [eventName]: callback,
+                },
+            ]);
         }
         element.addEventListener(eventName, callback);
     }
@@ -135,12 +137,12 @@ class Base {
         const allListenersForElement = this._eventListeners.get(element);
 
         allListenersForElement.forEach((listener, index) => {
-            if (eventName === '') {
+            if (eventName === "") {
                 this._detachEvent(element, Object.keys(listener)[0], Object.values(listener)[0], index);
             } else {
                 const callback = listener[eventName];
 
-                if (typeof callback === 'function') {
+                if (typeof callback === "function") {
                     this._detachEvent(element, eventName, callback, index);
                 }
             }
@@ -156,9 +158,9 @@ class Base {
      * @param {object} [data]
      * @param {Element} el
      */
-    emitEvent(name = '', data = {}, el = this.options.el) {
+    emitEvent(name = "", data = {}, el = this.options.el) {
         const event = new CustomEvent(name, {
-            detail: data
+            detail: data,
         });
 
         el.dispatchEvent(event);
@@ -187,7 +189,7 @@ class Base {
      * @param {Node|NodeList} selector
      * @param {string} [eventName] - Kann ausgelassen werden, um alle Events zu entfernen.
      */
-    off(selector, eventName = '') {
+    off(selector, eventName = "") {
         if (this._isNodeList(selector)) {
             selector.forEach((element) => {
                 this._detachEvents(element, eventName);
@@ -202,10 +204,11 @@ class Base {
      */
     offAll() {
         this._eventListeners.forEach((allListenersForElement, element) => {
-            this._detachEvents(element, '');
+            this._detachEvents(element, "");
         });
     }
 }
+
 
 /***/ },
 
@@ -231,7 +234,7 @@ class BreakpointProvider {
      * @param {HTMLElement} el
      * @param {string} pseudoElement
      */
-    constructor(el = document.querySelector('html'), pseudoElement = 'after') {
+    constructor(el = document.querySelector("html"), pseudoElement = "after") {
         this._el = el;
         this._pseudoElement = pseudoElement;
         this._breakpoints = this._getBreakpoints();
@@ -242,7 +245,10 @@ class BreakpointProvider {
      * @returns {string}
      */
     _getContentValue() {
-        return window.getComputedStyle(this._el, `::${this._pseudoElement}`).getPropertyValue('content').replace(/['"]/g, '');
+        return window
+            .getComputedStyle(this._el, `::${this._pseudoElement}`)
+            .getPropertyValue("content")
+            .replace(/['"]/g, "");
     }
 
     /**
@@ -253,8 +259,8 @@ class BreakpointProvider {
         const breakpointsString = this._getContentValue();
         const breakpoints = {};
 
-        breakpointsString.split(',').forEach((keyValuePair) => {
-            const breakpoint = keyValuePair.split(':');
+        breakpointsString.split(",").forEach((keyValuePair) => {
+            const breakpoint = keyValuePair.split(":");
 
             breakpoints[breakpoint[0]] = breakpoint[1];
         });
@@ -269,6 +275,7 @@ class BreakpointProvider {
         return this._breakpoints;
     }
 }
+
 
 /***/ },
 
@@ -291,7 +298,6 @@ __webpack_require__.r(__webpack_exports__);
  */
 class DateToInputConverter {
     constructor() {
-         
         this.dateObj = new Date(...arguments);
     }
 
@@ -343,6 +349,7 @@ class DateToInputConverter {
     }
 }
 
+
 /***/ },
 
 /***/ "./node_modules/@ryze-digital/js-utilities/src/DeepMerge.js"
@@ -362,7 +369,7 @@ class DeepMerge {
      * @returns {boolean}
      */
     static _isPlainObject(value) {
-        if (value === null || typeof value !== 'object') {
+        if (value === null || typeof value !== "object") {
             return false;
         }
 
@@ -377,7 +384,7 @@ class DeepMerge {
      * @returns {boolean}
      */
     static _isUnsafeKey(key) {
-        return key === '__proto__' || key === 'constructor' || key === 'prototype';
+        return key === "__proto__" || key === "constructor" || key === "prototype";
     }
 
     /**
@@ -481,7 +488,7 @@ class DeepMerge {
         let target;
         let sources;
 
-        if (typeof args[0] === 'boolean') {
+        if (typeof args[0] === "boolean") {
             [deep, target, ...sources] = args;
         } else {
             [target, ...sources] = args;
@@ -556,7 +563,7 @@ class DetectSticky {
         this._el = el;
         this._observer = this._getObserver();
 
-        this._el.style.top = '-1px';
+        this._el.style.top = "-1px";
 
         this._observer.observe(this._el);
     }
@@ -566,11 +573,14 @@ class DetectSticky {
      * @returns {IntersectionObserver}
      */
     _getObserver() {
-        return new IntersectionObserver(([{ target, intersectionRatio }]) => {
-            target.classList.toggle('is-sticky', intersectionRatio < 1);
-        }, {
-            threshold: [1]
-        });
+        return new IntersectionObserver(
+            ([{ target, intersectionRatio }]) => {
+                target.classList.toggle("is-sticky", intersectionRatio < 1);
+            },
+            {
+                threshold: [1],
+            },
+        );
     }
 
     /**
@@ -580,6 +590,7 @@ class DetectSticky {
         return this._observer;
     }
 }
+
 
 /***/ },
 
@@ -603,33 +614,34 @@ class FontVerification {
      * @param {string} projectId
      * @param {string} baseUrl
      */
-    constructor(projectId, baseUrl = 'fast.fonts.net/t/1.css?apiType=css&projectid=') {
+    constructor(projectId, baseUrl = "fast.fonts.net/t/1.css?apiType=css&projectid=") {
         this._projectId = projectId;
         this._baseUrl = baseUrl;
 
-        if (document.readyState !== 'loading') {
+        if (document.readyState !== "loading") {
             this._createVerificationTag();
 
             return;
         }
 
-        document.addEventListener('DOMContentLoaded', this._createVerificationTag);
+        document.addEventListener("DOMContentLoaded", this._createVerificationTag);
     }
 
     /**
      *  @private
      */
     _createVerificationTag() {
-        const linkTag = document.createElement('link');
+        const linkTag = document.createElement("link");
         const url = `https://${this._baseUrl}${this._projectId}`;
 
-        linkTag.rel = 'stylesheet';
-        linkTag.media = 'all';
+        linkTag.rel = "stylesheet";
+        linkTag.media = "all";
         linkTag.href = url;
 
         document.body.appendChild(linkTag);
     }
 }
+
 
 /***/ },
 
@@ -667,12 +679,15 @@ class ReduceFunctionCalls {
             } else {
                 clearTimeout(timeout);
 
-                timeout = setTimeout(() => {
-                    if ((Date.now() - lastRan) >= delay) {
-                        callback.apply(scope, args);
-                        lastRan = Date.now();
-                    }
-                }, delay - (Date.now() - lastRan));
+                timeout = setTimeout(
+                    () => {
+                        if (Date.now() - lastRan >= delay) {
+                            callback.apply(scope, args);
+                            lastRan = Date.now();
+                        }
+                    },
+                    delay - (Date.now() - lastRan),
+                );
             }
         };
     }
@@ -700,6 +715,7 @@ class ReduceFunctionCalls {
         };
     }
 }
+
 
 /***/ },
 
@@ -733,6 +749,7 @@ class Selectors {
     }
 }
 
+
 /***/ },
 
 /***/ "./node_modules/@ryze-digital/js-utilities/src/Tracker.js"
@@ -750,8 +767,8 @@ class Tracker {
      * @type {object}
      */
     #trackingProviderMapping = {
-        'matomo': '_paq',
-        'googleAnalytics': 'gtag'
+        matomo: "_paq",
+        googleAnalytics: "gtag",
     };
 
     /**
@@ -763,7 +780,7 @@ class Tracker {
         this.#setTrackingProvider();
 
         if (this.#trackingProvider.length === 0) {
-            console.warn('No tracking provider detected');
+            console.warn("No tracking provider detected");
         }
     }
 
@@ -776,14 +793,20 @@ class Tracker {
     track(category, action, name, value) {
         this.#trackingProvider.forEach((trackingProvider) => {
             switch (trackingProvider) {
-                case 'matomo':
-                    window[this.#trackingProviderMapping[trackingProvider]].push(['trackEvent', category, action, name, value]);
+                case "matomo":
+                    window[this.#trackingProviderMapping[trackingProvider]].push([
+                        "trackEvent",
+                        category,
+                        action,
+                        name,
+                        value,
+                    ]);
                     break;
-                case 'googleAnalytics':
-                    window[this.#trackingProviderMapping[trackingProvider]]('event', action, {
+                case "googleAnalytics":
+                    window[this.#trackingProviderMapping[trackingProvider]]("event", action, {
                         event_category: category,
                         event_label: name,
-                        value: value
+                        value: value,
                     });
                     break;
             }
@@ -792,12 +815,13 @@ class Tracker {
 
     #setTrackingProvider() {
         Object.keys(this.#trackingProviderMapping).forEach((trackingProvider) => {
-            if (typeof window[this.#trackingProviderMapping[trackingProvider]] !== 'undefined') {
+            if (typeof window[this.#trackingProviderMapping[trackingProvider]] !== "undefined") {
                 this.#trackingProvider.push(trackingProvider);
             }
         });
     }
 }
+
 
 /***/ },
 
